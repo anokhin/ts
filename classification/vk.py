@@ -7,6 +7,7 @@ __author__ = 'Nikolay Anokhin'
 
 import datetime
 import user
+from sys import argv
 from api import Api
 
 
@@ -42,9 +43,11 @@ class VkApi(Api):
 
 
 def main():
-    token = ""
+    file_token = open(argv[1], "r")
+    token = file_token.readline().strip()
+    uid = file_token.readline().strip()
     api = VkApi(token)
-    uids = api.get_friend_ids("122091")
+    uids = api.get_friend_ids(uid)
     for u in api.get_users(uids):
         print u.to_tsv()
 
