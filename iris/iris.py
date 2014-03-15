@@ -72,7 +72,7 @@ def main():
         exit(1)
 
     # Prepare classifier
-    sgd = build_classifier(x, y, 'hinge')
+    sgd = build_classifier(x, y, 'log')
     # Plot data set along with the decision function
     plot_data_set(x, y, clf=sgd)
 
