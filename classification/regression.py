@@ -25,8 +25,6 @@ def linearRegression(x, y):
     y - 1D numpy array of values corresponding objects in x
     return - 1D numpy array of computed coefficients
     """
-
-    rows = x.shape[0]
     cols = x.shape[1]
 
     assert x.ndim == 2 and y.ndim == 1 and x.shape[0] == y.shape[0], "Incorrect dimensions of x and y"
