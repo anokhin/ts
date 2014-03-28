@@ -13,7 +13,11 @@ class Tree:
         self.root.process()                
         self.graph.add_node(pydot.Node(":Leaf Node", style="filled", fillcolor="#b3f487", shape='note'))
         self.graph.add_node(pydot.Node(":Inner Node", style="filled", fillcolor="#98d1d8", shape='note'))        
-        self.graph.write_jpg('example1_graph.jpg')
+        try:
+            self.graph.write_jpg('graph.jpg')
+        except:
+            print "Picture creating failed. Probably it's too big"
+				
         
     def predict(self, test):
         result = empty(len(test))
