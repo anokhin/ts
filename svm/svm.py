@@ -1,9 +1,11 @@
 import argparse
+from matplotlib.cm import get_cmap
 
 import numpy
 import pylab
 import numpy.random
 import sklearn.datasets
+import sklearn.svm
 
 
 __author__ = 'Nikolay Anokhin'
@@ -59,14 +61,38 @@ def generate_sin(args):
     return x, y
 
 
+def select_model(x, y):
+    """
+    Implement some model selection strategy here:
+    seek through different kernels and parameters.
+
+    Use a validation scheme to select the best model.
+
+    Returns:
+        SVM classifier implemented by sklearn SVC class.
+    """
+    model = sklearn.svm.SVC()
+    print "Trying model {}".format(model)
+    model.fit(x, y)
+    return model
+
+
 def plot_data_set(x, y, description=''):
-    pylab.figure(figsize=(10, 10))
+    print "Plotting data set points"
+    pylab.figure(figsize=(8, 8))
 
     colors = numpy.array(['r', 'b'])[y]
     pylab.title(description, fontsize='small')
     pylab.scatter(x[:, 0], x[:, 1], marker='o', c=colors, s=50)
 
-    pylab.show()
+
+def plot_decision_region(x1_min, x2_min, x1_max, x2_max, clf, n_points=1000):
+    print "Plotting decision region"
+    x1, x2 = numpy.meshgrid(numpy.linspace(x1_min, x1_max, n_points), numpy.linspace(x2_min, x2_max, n_points))
+    z = clf.decision_function(numpy.c_[x1.ravel(), x2.ravel()]).reshape(x1.shape)
+
+    pylab.contour(x1, x2, z, levels=[0.0], linestyles='solid', linewidths=2.0)
+    pylab.contour(x1, x2, z, levels=[-1.0, 1.0], linestyles='dashed', linewidths=1.0)
 
 
 def main():
@@ -75,7 +101,12 @@ def main():
 
     x, y = args.func(args)
 
+    clf = select_model(x, y)
+
     plot_data_set(x, y)
+    plot_decision_region(x[:, 0].min(), x[:, 1].min(), x[:, 0].max(), x[:, 1].max(), clf)
+
+    pylab.show()
 
 
 def parse_args():
