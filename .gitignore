@@ -35,4 +35,7 @@ nosetests.xml
 .project
 .pydevproject
 .idea
-.idea/dictionaries/*.xml
+.idea/dictionaries/*
+.xml
+*.pdf
+*.DS_Store
