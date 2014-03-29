@@ -1,8 +1,8 @@
-import requests
-import json
-import facebook
+import requests #pip install requests
+import json 
+import facebook #pip install facebook-sdk
 
-ACCESS_TOKEN = 'CAACEdEose0cBAKYL7PEsTZCTlCc14SZAdsAUfrbjkia5drhjc5eBawtZCLZAqWdTSIXi781uNPrHC5xgZArPhX6SiDmqkXlP57Bdb8kow4vKwjqwkC6mpA31eXIP16MOKmEeFD3US6vUE6zm0AYQwzwrc96OmUyaNnZBO7YnsDm9rLmjqLrMbVOoZC7NwOHc4YIQQqFZBoQfmAZDZD' 
+ACCESS_TOKEN = 'CAACEdEose0cBAPa3BamP4mge3ImK10ZBZAExEJDRGJicWDZAzu1K722ZBjpfbM1CRIkxJrkwrtgMgMEkmm3xghJWI3mPexjvRwOay46SBOpLCBmPZBP6wsRGf6D6ocIXZC7t6cAMQNZAXSEQDmArnSZCOYIHMemeXCv1jyRckQYuquGHMZCsdmZAz9ayZBkZA8QrNMcZD' 
 base_url = 'https://graph.facebook.com/me'
 
 def pp(o): 
