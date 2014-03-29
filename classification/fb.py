@@ -14,10 +14,11 @@ from sklearn.feature_extraction import DictVectorizer
 import regression
 
 from api import Api
+#create file my_secrect_token.py and define variable FB_TOKEN with facebook token there
+#or comment this import if you don't want to update training set by your friends data
 import my_secrect_token
 
 __author__ = 'Nikolay Anokhin'
-
 
 class FbApi(Api):
     endpoint = "https://graph.facebook.com/{method}"
@@ -107,15 +108,18 @@ class RegressionSerialize:
             self.users_data = {}
 
     def update_data_from_server(self):
-        token = my_secrect_token.FB_TOKEN
-        api = FbApi(token)
+        try:
+            token = my_secrect_token.FB_TOKEN
+            api = FbApi(token)
 
-        for uid in api.get_friend_ids("me"):
-            u = api.get_user(uid)
-            if u.age is None:
-                continue
-            learn_data = u.get_data_for_regression()
-            self.users_data[uid] = learn_data
+            for uid in api.get_friend_ids("me"):
+                u = api.get_user(uid)
+                if u.age is None:
+                    continue
+                learn_data = u.get_data_for_regression()
+                self.users_data[uid] = learn_data
+        except (NameError, AttributeError):
+            print "Token was not found. Add your token to extend learning set!"
 
     def save(self):
         self.file = open(self.file_path, "w")
@@ -125,7 +129,7 @@ class RegressionSerialize:
 def main():
     serial = RegressionSerialize()
 
-    print "data acquiring"
+    print "data acquiring..."
     serial.update_data_from_server()
     serial.save()
 

@@ -14,7 +14,7 @@ def gradientDescent(func, derivative, start, grad_coef=0.01, eps=0.001, max_iter
         if gradient_norm < eps and np.linalg.norm(step) < eps:
             break
 
-        print "grad norm ", gradient_norm
+        #print "grad norm ", gradient_norm
 
         step = grad_coef / max(1, gradient_norm) * gradient
         cur_pos -= step
@@ -56,8 +56,7 @@ def linear_algebra_test():
     #print "x=", x
     #print "Ax=", np.dot(A, x)
     #print "b=", b
-    print "R SSE=", np.linalg.norm(np.dot(A, x) - b) / dim
-
+    print "Relative SSE=", np.linalg.norm(np.dot(A, x) - b) / dim
 
 if __name__ == "__main__":
     linear_algebra_test()
