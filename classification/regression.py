@@ -2,55 +2,62 @@ __author__ = 'vludv'
 
 import numpy as np
 
-def gradientDescent(func, derivative, start, grad_coef = 1.0, eps = 0.0001, max_iters = 1000):
+def gradientDescent(func, derivative, start, grad_coef=0.01, eps=0.001, max_iters=500):
     iteration = 0
     cur_pos = start.copy()
     step = np.zeros(start.shape)
 
     while iteration < max_iters:
         gradient = derivative(cur_pos)
+        gradient_norm = np.linalg.norm(gradient)
 
-        if np.linalg.norm(gradient) < eps and np.linalg.norm(step) < eps:
+        if gradient_norm < eps and np.linalg.norm(step) < eps:
             break
 
-        step = grad_coef * gradient
+        print "grad norm ", gradient_norm
+
+        step = grad_coef / max(1, gradient_norm) * gradient
         cur_pos -= step
         iteration += 1
 
     return cur_pos
 
-def linearRegression(x, y):
+def linearRegression(A, b):
     """
-    x - 2D numpy array of objects, one object per row
-    y - 1D numpy array of values corresponding objects in x
+    A - 2D numpy array of objects, one object per row
+    b - 1D numpy array of values corresponding objects in x
     return - 1D numpy array of computed coefficients
     """
-    cols = x.shape[1]
+    cols = A.shape[1]
 
-    assert x.ndim == 2 and y.ndim == 1 and x.shape[0] == y.shape[0], "Incorrect dimensions of x and y"
+    assert A.ndim == 2 and b.ndim == 1 and A.shape[0] == b.shape[0], "Incorrect dimensions of x and y"
 
-    def sqrFunctional(x, A = x, b = y):
+    A = np.array(A, dtype=np.float64)
+    b = np.array(b, dtype=np.float64)
+
+    def sqrFunctional(x):
         return np.sum( (np.dot(A, x) - b)**2 )
 
-    def sqrFunctionalDerivative(x, A = x, b = y):
+    def sqrFunctionalDerivative(x):
         d = np.dot(A, x) - b
         return 2*np.dot(d, A)
 
-    start = np.zeros(cols)
-    decision = gradientDescent(sqrFunctional, sqrFunctionalDerivative, start, 0.5)
+    start = np.zeros(cols, dtype=np.float64)
+    decision = gradientDescent(sqrFunctional, sqrFunctionalDerivative, start)
     return decision
 
-def main():
-    dim = 5
-    A = np.identity(dim) + np.random.sample((dim, dim))/1000.0
+def linear_algebra_test():
+    dim = 1000
+    A = np.identity(dim) + np.random.sample((dim, dim))/2.0
     b = np.random.sample((dim,))
 
     x = linearRegression(A, b)
 
-    print "x=", x
-    print "Ax=", np.dot(A, x)
-    print "b=", b
-    print "SSE=", np.linalg.norm(np.dot(A, x) - b)
+    #print "x=", x
+    #print "Ax=", np.dot(A, x)
+    #print "b=", b
+    print "R SSE=", np.linalg.norm(np.dot(A, x) - b) / dim
+
 
 if __name__ == "__main__":
-    main()
+    linear_algebra_test()
