@@ -10,10 +10,9 @@ import user
 import json
 
 import numpy as np
-from sklearn.feature_extraction import DictVectorizer
-import regression
-
+from linear_regression import FbLinRegVectorizer, LinearRegression
 from api import Api
+
 #create file my_secrect_token.py and define variable FB_TOKEN with facebook token there
 #or comment this import if you don't want to update training set by your friends data
 import my_secrect_token
@@ -34,47 +33,18 @@ class FbApi(Api):
         for friend in json.get("data", []):
             yield friend["id"]
 
+    def get_user_json(self, uid):
+        return self.get_node(uid, fields="id,first_name,last_name,birthday,gender")
+
     def get_user(self, uid):
-        json = self.get_node(uid, fields="id,first_name,last_name,birthday,gender")
+        json = self.get_user_json(uid)
         return self.json_to_user(json)
 
     @staticmethod
-    def get_user_first_work_year(data):
-        works = data.get("work")
-        if works:
-            works_years = []
-            for cur_work in works:
-                year_start = FbApi.parse_date(cur_work.get("start_date"))
-                if not year_start is None:
-                    works_years.append(year_start)
-            if works_years:
-                return max(works_years)
-        return None
-
-    @staticmethod
-    def get_user_last_education_year(data):
-        works = data.get("education")
-        if works:
-            today_year = datetime.date.today().year
-            edu_years = []
-            for cur_edu in works:
-                if cur_edu.get("type") == "College" and cur_edu.get("year") and cur_edu.get("year").get("name"):
-                    year = int(cur_edu.get("year").get("name"))
-                    if today_year - year < 100:
-                        edu_years.append(today_year - year)
-            if edu_years:
-                return min(edu_years)
-        return None
-
-    @staticmethod
     def json_to_user(data):
-        u = user.User()
-        u.set_args(uid=data['id'], first_name=data['first_name'], last_name=data['last_name'])
-        u.age = FbApi.parse_date(data.get('birthday'))
+        u = user.User(data['id'], data['first_name'], data['last_name'])
         u.sex = data.get('gender')
-        u.relationship = data.get('relationship_status')
-        u.first_work = FbApi.get_user_first_work_year(data)
-        u.last_education = FbApi.get_user_last_education_year(data)
+        u.set_age(FbApi.parse_date(data.get('birthday')))
         return u
 
     @staticmethod
@@ -86,25 +56,23 @@ class FbApi(Api):
                     date = datetime.date(int(parts[2]), int(parts[0]), int(parts[1]))
                 else:
                     date = datetime.date(int(parts[0]), int(parts[1]), int(parts[2]))
-                years = user.User.date_to_years(date)
+                years = int((date.today() - date).days / 365.2425)
                 return years
         return None
 
-class RegressionSerialize:
+
+class UserSerializer:
     def __init__(self):
         """
-        set dict of serialized users and file pointer to serialized file for following writing
+        read user data from file to dict self.users_data
         """
         self.file_path = "users_data_linear_regression.json"
         self.file = None
-
         try:
             self.file = open(self.file_path, "r")
             self.users_data = json.load(self.file)
             self.file.close()
-        except IOError:
-            self.users_data = {}
-        except ValueError:
+        except (IOError, ValueError):
             self.users_data = {}
 
     def update_data_from_server(self):
@@ -113,48 +81,37 @@ class RegressionSerialize:
             api = FbApi(token)
 
             for uid in api.get_friend_ids("me"):
-                u = api.get_user(uid)
-                if u.age is None:
-                    continue
-                learn_data = u.get_data_for_regression()
-                self.users_data[uid] = learn_data
+                self.users_data[uid] = api.get_user_json(uid)
+
         except (NameError, AttributeError):
             print "Token was not found. Add your token to extend learning set!"
 
     def save(self):
         self.file = open(self.file_path, "w")
-        json.dump(self.users_data, self.file)
+        json.dump(self.users_data, self.file, indent=1, sort_keys=True)
         self.file.close()
 
 def main():
-    serial = RegressionSerialize()
+    serial = UserSerializer()
 
     print "data acquiring..."
     serial.update_data_from_server()
     serial.save()
 
-    data = serial.users_data.values()
-    predict = []
-    for item in data:
-        predict.append(item["age"])
-        del item["age"]
-
-    dict_vectorizer = DictVectorizer()
-    X = dict_vectorizer.fit_transform(data).toarray()
-    X = np.nan_to_num(X) #not ideal solution
-    Y = np.array(predict)
+    print "vectorizing..."
+    vectorizer = FbLinRegVectorizer()
+    X, y = vectorizer.fit_transform(serial.users_data.values(), target_feature="age")
 
     print "training..."
-    a = regression.linearRegression(X, Y)
+    lr = LinearRegression()
+    lr.fit(X, y)
+    y_predicted = lr.predict(X)
 
-    Y_predicted = np.dot(X, a)
-    SSE_error = np.linalg.norm(Y - Y_predicted)
-    print "Prediction. Relative SSE error:", SSE_error/len(Y)
+    SSE_error = np.linalg.norm(y - y_predicted)
+    print "Prediction. Relative SSE error:", SSE_error/len(y)
 
-    print dict_vectorizer.get_feature_names()
-    print 'a=', a
-    #print Y
-    #print Y_predicted
+    print vectorizer.get_feature_names()
+    print 'a=', lr.train_coefs
 
 if __name__ == "__main__":
     main()
