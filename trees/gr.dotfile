@@ -1,0 +1,16 @@
+graph "decision tree" {
+"0. grad_year <= 2013.0" -- "1. grad_year <= 0.0";
+"0. grad_year <= 2013.0" -- "2. friends <= 222.0";
+"1. grad_year <= 0.0" -- "3. emotions <= 8.0";
+"1. grad_year <= 0.0" -- "4. avg = 23.2727272727, am = 22";
+"2. friends <= 222.0" -- "5. avg = 20.2592592593, am = 54";
+"2. friends <= 222.0" -- "6. friends <= 433.0";
+"3. emotions <= 8.0" -- "7. friends <= 230.0";
+"3. emotions <= 8.0" -- "8. albums <= 7.0";
+"6. friends <= 433.0" -- "9. avg = 20.6216216216, am = 37";
+"6. friends <= 433.0" -- "10. avg = 20.8571428571, am = 21";
+"7. friends <= 230.0" -- "11. avg = 20.2941176471, am = 34";
+"7. friends <= 230.0" -- "12. avg = 20.3333333333, am = 21";
+"8. albums <= 7.0" -- "13. avg = 21.8666666667, am = 15";
+"8. albums <= 7.0" -- "14. avg = 20.5555555556, am = 9";
+}

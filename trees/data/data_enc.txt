@@ -1,0 +1,30 @@
+Здесь расшифровка того, что находится в monty_python.csv
+
+1	uid 		id пользователя вк
+2	sex		    пол: 1ж, 2м
+3	age		    возраст
+4	relation	код статуса отношений
+5	status_len	длина статуса
+6	emotions	условно - число смайлов на любой коммент к фото юзера
+				подробнее здесь: get_all_photo_comments
+7	videos
+8	notes
+9	subscriptions
+10	mutual_friends
+11	audios
+12	photos
+13	followers
+14	albums
+15	friends
+16	pages
+17	likes		условно - число лайков на пост/перепост юзера на стене
+				подробнее: get_wall_comments
+18	graduation	год выпуска из универа - замечательно подходит для
+				классификации возраста
+				Если =0: не указано
+19	activity	условно - степень активности юзера 0<<<-5
+				подробнее: set_frequency
+		далее данные, которые почему-то не всегда извлекаются 
+20	user_photos
+21	user_videos
+22	groups

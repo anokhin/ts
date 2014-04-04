@@ -1,0 +1,13 @@
+	Получить набор features по умолчанию
+cols = trees.choose_targets()
+	Получить векторы из входных данных(по умолчанию data/data.csv) вместе с названиями
+x, y, names = trees.read_data_set(cols)
+	Можно вывести статистику по векторам
+trees.print_set_stats(x, y, names)
+	Построить классификатор с параметрами по умолчанию
+cls = trees.build_classifier()
+	Получить решающее дерево
+model = cls.fit(x, y)
+	Дерево можно отрисовать в файл по умолчанию
+model.draw_me(names)
+	Доступны pruning, predict
