@@ -74,6 +74,10 @@ def get_last_name(json_dict):
     return json_dict.get(u'last_name', u'')
 get_last_name.required_fields = (u'last_name')
 
+def get_sex(json_dict):
+    return json_dict.get(u'sex', u'0')
+get_last_name.required_fields = (u'sex')
+
 
 def main():
     token = argv[1]
