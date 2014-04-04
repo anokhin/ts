@@ -70,6 +70,11 @@ def get_first_name(json_dict):
     return json_dict.get(u'first_name', u'')
 get_first_name.required_fields = (u'first_name')
 
+def get_last_name(json_dict):
+    return json_dict.get(u'last_name', u'')
+get_last_name.required_fields = (u'last_name')
+
+
 def main():
     token = argv[1]
     user_uid = argv[2]
