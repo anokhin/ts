@@ -45,6 +45,14 @@ class VkApi(Api):
         u.set_age(VkApi.parse_birth_date(json.get('bdate')))
         return u
 
+    """use this when vk starts returning request for captcha
+    instead of actual responses"""
+    def send_captcha_answer(self):
+        return self.call("users.get",
+                         captcha_sid='',
+                         captcha_key=''
+                         )
+
     @staticmethod
     def parse_birth_date(birth_date_str):
         if birth_date_str:
