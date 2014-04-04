@@ -92,6 +92,11 @@ def get_age(json_dict):
 get_age.required_fields = (u'bdate')
 
 
+def get_has_mobile(json_dict):
+    return json_dict.get(u'has_mobile', u'0')
+get_has_mobile.required_fields = (u'has_mobile')
+
+
 def main():
     token = argv[1]
     user_uid = argv[2]
