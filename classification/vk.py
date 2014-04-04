@@ -102,6 +102,13 @@ def get_graduation(json_dict):
 get_graduation.required_fields = frozenset([u'education'])
 
 
+def get_required_fields(target_fields):
+    required_fields = set()
+    for k, v in target_fields:
+        required_fields.update(v.required_fields)
+    return required_fields
+
+
 def main():
     token = argv[1]
     user_uid = argv[2]
