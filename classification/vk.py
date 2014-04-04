@@ -51,6 +51,7 @@ def main():
     uid = file_token.readline().strip()
     api = VkApi(token)
     uids = api.get_friend_ids(uid)
+    print "uid\tfirst_name\tlast_name\tsex\tage"
     for u in api.get_users(uids):
         print u.to_tsv()
 
