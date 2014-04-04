@@ -49,13 +49,17 @@ class VkApi(Api):
 
 def main():
     token = argv[1]
-    uid = argv[2]
+    user_uid = argv[2]
     if (len(argv) >= 4):
         output_file = io.open(argv[3], "w", encoding='utf-8')
     else:
         output_file = sys.stdout
     api = VkApi(token)
-    uids = api.get_friend_ids(uid)
+    uids = api.get_friend_ids(user_uid)
+    fields = ["uid", "first_name", "last_name", "sex", "bdate",
+              "has_mobile", "education"]
+    jsons = [api.get_json(uid, fields) for uid in uids]
+
     output_file.write(u"uid\tfirst_name\tlast_name\tsex\tage\n")
 #    for u in api.get_users(uids):
 #        print u.to_tsv().encode('utf-8')
