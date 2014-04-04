@@ -4,7 +4,6 @@ __author__ = 'Nikolay Anokhin'
 
 
 class Api(object):
-
     endpoint = ''
 
     def __init__(self, access_token):
@@ -12,12 +11,13 @@ class Api(object):
 
     def call(self, method, **params):
         request_params = params.copy()
-        request_params["access_token"] = self.access_token
+        if (len(self.access_token) > 0):
+            request_params["access_token"] = self.access_token
         try:
-            response = requests.get(self.endpoint.format(method=method), params=request_params)
+            response = requests.get(self.endpoint.format(method=method), params=request_params, timeout=3.0)
             if response.status_code != 200:
                 raise requests.exceptions.RequestException("Bad status code {}".format(response.status_code))
             return response.json()
         except requests.exceptions.RequestException as re:
             print "A n API call failed with exception {}".format(re)
-            raise
+            return None
