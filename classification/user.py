@@ -17,12 +17,11 @@ class User(object):
     def to_tsv(self):
         return u'\t'.join(
             [
-                unicode(
-                    self.uid), unicode(
-                    self.first_name), unicode(
-                    self.last_name), unicode(
-                    self.sex), unicode(
-                    self.age)])
+                unicode(self.uid),
+                unicode(self.first_name),
+                unicode(self.last_name),
+                unicode(self.sex),
+                unicode(self.age)])
 
     def __str__(self):
         return unicode(self).encode('utf-8')
