@@ -63,8 +63,8 @@ class VkApi(Api):
                     int(parts[2]), int(parts[1]), int(parts[0]))
 
 def get_uid(json_dict):
-    get_uid.required_fields = (u'uid')
-    return json_dict.get(u'uid', 0)
+    return json_dict.get(u'uid', u'uid')
+get_uid.required_fields = (u'uid')
 
 def main():
     token = argv[1]
