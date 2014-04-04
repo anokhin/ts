@@ -22,14 +22,14 @@ class VkApi(Api):
         for friend_id in json.get("response", []):
             yield str(friend_id)
 
-    def get_users(self, uid_list):
+    def get_jsons(self, uid_list, fields):
         uids = ",".join(uid_list)
         json = self.call(
             "users.get",
             uids=uids,
-            fields="uid,first_name,last_name,sex,bdate")
+            fields=",".join(fields))
         for user_json in json.get("response", []):
-            yield self.json_to_user(user_json)
+            yield user_json
 
     def get_json(self, uid, fields):
         return self.call(
