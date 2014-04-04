@@ -53,7 +53,7 @@ def main():
     uids = api.get_friend_ids(uid)
     print "uid\tfirst_name\tlast_name\tsex\tage"
     for u in api.get_users(uids):
-        print u.to_tsv()
+        print u.to_tsv().encode('utf-8')
 
 
 if __name__ == "__main__":
