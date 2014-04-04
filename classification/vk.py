@@ -22,7 +22,10 @@ class VkApi(Api):
 
     def get_users(self, uid_list):
         uids = ",".join(uid_list)
-        json = self.call("users.get", uids=uids, fields="uid,first_name,last_name,sex,bdate")
+        json = self.call(
+            "users.get",
+            uids=uids,
+            fields="uid,first_name,last_name,sex,bdate")
         print json
         for user_json in json.get("response", []):
             yield self.json_to_user(user_json)
@@ -39,7 +42,8 @@ class VkApi(Api):
         if birth_date_str:
             parts = birth_date_str.split('.')
             if len(parts) == 3:
-                return datetime.date(int(parts[2]), int(parts[1]), int(parts[0]))
+                return datetime.date(
+                    int(parts[2]), int(parts[1]), int(parts[0]))
 
 
 def main():
