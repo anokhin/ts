@@ -31,6 +31,13 @@ class VkApi(Api):
         for user_json in json.get("response", []):
             yield self.json_to_user(user_json)
 
+    def get_json(self, uid, fields):
+        return self.call(
+            "users.get",
+            uids=uid,
+            fields=",".join(fields)
+        )
+
     @staticmethod
     def json_to_user(json):
         u = user.User(json['uid'], json['first_name'], json['last_name'])
