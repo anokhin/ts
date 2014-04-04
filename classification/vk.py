@@ -56,7 +56,6 @@ def main():
         output_file = sys.stdout
     api = VkApi(token)
     uids = api.get_friend_ids(uid)
-    print [x for x in uids]
     output_file.write(u"uid\tfirst_name\tlast_name\tsex\tage\n")
 #    for u in api.get_users(uids):
 #        print u.to_tsv().encode('utf-8')
