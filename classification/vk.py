@@ -26,7 +26,6 @@ class VkApi(Api):
             "users.get",
             uids=uids,
             fields="uid,first_name,last_name,sex,bdate")
-        print json
         for user_json in json.get("response", []):
             yield self.json_to_user(user_json)
 
