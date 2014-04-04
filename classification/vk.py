@@ -66,6 +66,10 @@ def get_uid(json_dict):
     return json_dict.get(u'uid', u'uid')
 get_uid.required_fields = (u'uid')
 
+def get_first_name(json_dict):
+    return json_dict.get(u'first_name', u'')
+get_first_name.required_fields = (u'first_name')
+
 def main():
     token = argv[1]
     user_uid = argv[2]
