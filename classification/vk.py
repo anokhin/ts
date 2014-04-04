@@ -89,6 +89,7 @@ def get_age(json_dict):
     birthday = json_dict.get(u'bdate', unicode(time.strftime("%d.%m.%Y")))
     parsed_birthday = VkApi.parse_birth_date(birthday)
     return int((date.today() - parsed_birthday).days / 365.2425)
+get_age.required_fields = (u'bdate')
 
 
 def main():
