@@ -9,8 +9,10 @@ import datetime
 import user
 import io
 import sys
+import time
 from sys import argv
 from api import Api
+from datetime import date
 
 
 class VkApi(Api):
@@ -77,6 +79,11 @@ get_last_name.required_fields = (u'last_name')
 def get_sex(json_dict):
     return json_dict.get(u'sex', u'0')
 get_last_name.required_fields = (u'sex')
+
+def get_age(json_dict):
+    birthday = json_dict.get(u'bdate', unicode(time.strftime("%d.%m.%Y")))
+    parsed_birthday = VkApi.parse_birth_date(birthday)
+    return int((date.today() - parsed_birthday).days / 365.2425)
 
 
 def main():
