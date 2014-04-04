@@ -1,0 +1,31 @@
+Использование регрессии на основе SVM для оценки количества друзей пользователей VK
+
+- prediction_friends.py
+Файл реализующий модель регрессии на основе SVM
+Параметры для запуска: 
+
+python prediction_friends.py [ --learn_path <train_file_base> --test_path <predict_file_base> | --cv <file_base> ]
+
+Где 
+<train_file_base> - файл содержащий исходную информацию пользователей в следующем формате:
+UID,Name,Surname,Sex,Age,Audios,Photos,InterestPages,Friends
+В качестве примера можно использовать файл vk_base.csv
+
+<predict_file_base> - файл содержащий исходную информацию пользователей в следующем формате:
+UID,Name,Surname,Sex,Age,Audios,Photos,InterestPages,Friends, причем в поле Friends может быть указано
+значение 0 или None
+В качестве примера можно использовать файл vk_base.csv
+
+<file_base> - файл содержащий исходную информацию пользователей в следующем формате:
+UID,Name,Surname,Sex,Age,Audios,Photos,InterestPages,Friends
+В качестве примера можно использовать файл vk_base.csv
+
+Примеры запусков:
+python prediction_friends.py - выводит результат тестирования на скользящем контроле с фалом vk_base.csv
+
+python prediction_friends.py --cv <file_base> - выводит результат тестирования на скользящем контроле с фалом file_base
+
+python prediction_friends.py --learn_path <train_file_base> --test_path <predict_file_base> - выводит предсказание
+для файла predict_file_base
+
+
