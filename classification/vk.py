@@ -64,21 +64,26 @@ class VkApi(Api):
                 return datetime.date(
                     int(parts[2]), int(parts[1]), int(parts[0]))
 
+
 def get_uid(json_dict):
     return json_dict.get(u'uid', u'0')
 get_uid.required_fields = (u'uid')
+
 
 def get_first_name(json_dict):
     return json_dict.get(u'first_name', u'')
 get_first_name.required_fields = (u'first_name')
 
+
 def get_last_name(json_dict):
     return json_dict.get(u'last_name', u'')
 get_last_name.required_fields = (u'last_name')
 
+
 def get_sex(json_dict):
     return json_dict.get(u'sex', u'0')
 get_last_name.required_fields = (u'sex')
+
 
 def get_age(json_dict):
     birthday = json_dict.get(u'bdate', unicode(time.strftime("%d.%m.%Y")))
