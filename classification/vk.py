@@ -61,6 +61,9 @@ class VkApi(Api):
                 return datetime.date(
                     int(parts[2]), int(parts[1]), int(parts[0]))
 
+def get_uid(json_dict):
+    get_uid.required_fields = (u'uid')
+    return json_dict.get(u'uid', 0)
 
 def main():
     token = argv[1]
