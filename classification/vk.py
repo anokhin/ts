@@ -19,6 +19,7 @@ class VkApi(Api):
 
     def get_friend_ids(self, uid):
         json = self.call("friends.get", uid=uid)
+        print json
         for friend_id in json.get("response", []):
             yield str(friend_id)
 
