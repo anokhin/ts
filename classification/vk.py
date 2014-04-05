@@ -179,6 +179,8 @@ def process_user(target_fields, user_dict):
         new_dict[k] = v(user_dict)
     return new_dict
 
+api = None
+
 
 def main():
     token = argv[1]
@@ -187,6 +189,7 @@ def main():
         output_file = io.open(argv[3], "w", encoding='utf-8')
     else:
         output_file = sys.stdout
+    global api
     api = VkApi(token)
     uids = api.get_friend_ids(user_uid)
     target_fields = {
