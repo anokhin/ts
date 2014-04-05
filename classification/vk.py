@@ -82,7 +82,7 @@ get_last_name.required_fields = frozenset([u'last_name'])
 
 def get_sex(json_dict):
     return json_dict.get(u'sex', u'0')
-get_last_name.required_fields = frozenset([u'sex'])
+get_sex.required_fields = frozenset([u'sex'])
 
 
 def get_age(json_dict):
