@@ -158,6 +158,33 @@ def get_required_fields(target_fields):
     return required_fields
 
 
+def median(lst):
+    return sorted(lst)[len(lst)//2]
+
+
+def get_median_age_of_friends(json_dict):
+    """
+    Returns median of ages of all friends of the user
+    """
+    all_uids = [x for x in api.get_friend_ids(json_dict[u'uid'])]
+    uids_in_parts = [all_uids[i:i+100] for i in range(0, len(all_uids), 100)]
+    target_fields = {
+        u'uid': get_uid,
+        u'age': get_age,
+    }
+    required_fields = get_required_fields(target_fields)
+    ages = []
+    for uids in uids_in_parts:
+        response_dicts = api.get_jsons(uids, required_fields)
+        processed_users = [process_user(target_fields, user)
+                           for user in response_dicts]
+        ages.extend([user[u'age']
+                     for user in processed_users if user[u'age'] is not None])
+
+    return unicode(str(median(ages)))
+get_median_age_of_friends.required_fields = frozenset([u'age'])
+
+
 def user_dict_to_line(user, fields, delimeter=u'\t'):
     result = u""
     for field in fields:
