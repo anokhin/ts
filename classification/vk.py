@@ -147,7 +147,6 @@ def main():
         u'last_name': get_last_name,
         u'sex': get_sex,
         u'age': get_age,
-        u'has_mobile': get_has_mobile,
         u'graduation': get_graduation
     }
     target_fields_list = [k for k in target_fields.iterkeys()]
