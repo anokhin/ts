@@ -99,9 +99,9 @@ get_has_mobile.required_fields = frozenset([u'has_mobile'])
 
 def get_graduation(json_dict):
     graduation = json_dict.get(u'graduation', None)
-    if graduation == 0:
+    if graduation == 0 or graduation is None:
         return None
-    return graduation
+    return date.today().year - graduation
 get_graduation.required_fields = frozenset([u'education'])
 
 
