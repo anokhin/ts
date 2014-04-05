@@ -128,6 +128,29 @@ def get_school_start(json_dict):
 get_school_start.required_fields = frozenset([u'schools'])
 
 
+def get_school_end(json_dict):
+    """
+    Returns how many years ago the user finished his latest school
+    (the school with maximum year_to on vk)
+    If he has no mentioned schools with year_to, return None
+    """
+    try:
+        schools = json_dict[u'schools']
+    except KeyError:
+        return None
+    MAGICAL_MAX_END_YEAR = -9999
+    end_years = [
+        school.get(u'year_to', MAGICAL_MAX_END_YEAR) for school in schools]
+    if len(end_years) == 0:
+        return None
+    max_year = max(end_years)
+    if max_year == MAGICAL_MAX_END_YEAR:
+        return None
+    current_year = date.today().year
+    return current_year - max_year
+get_school_end.required_fields = frozenset([u'schools'])
+
+
 def get_required_fields(target_fields):
     required_fields = set()
     for k, v in target_fields.iteritems():
