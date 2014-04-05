@@ -104,7 +104,7 @@ get_graduation.required_fields = frozenset([u'education'])
 
 def get_required_fields(target_fields):
     required_fields = set()
-    for k, v in target_fields:
+    for k, v in target_fields.iteritems():
         required_fields.update(v.required_fields)
     return required_fields
 
