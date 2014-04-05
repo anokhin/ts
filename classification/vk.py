@@ -87,7 +87,7 @@ get_sex.required_fields = frozenset([u'sex'])
 def get_age(json_dict):
     parsed_birthday = VkApi.parse_birth_date(json_dict.get(u'bdate'))
     if parsed_birthday is None:
-        parsed_birthday = date.today()
+        return None
     return int((date.today() - parsed_birthday).days / 365.2425)
 get_age.required_fields = frozenset([u'bdate'])
 
