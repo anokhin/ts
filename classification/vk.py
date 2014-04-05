@@ -150,19 +150,20 @@ def main():
         u'has_mobile': get_has_mobile,
         u'graduation': get_graduation
     }
+    target_fields_list = [k for k in target_fields.iterkeys()]
     required_fields = get_required_fields(target_fields)
 
     response_dicts = api.get_jsons(uids, required_fields)
     without_deactivated = [x for x in response_dicts
                            if u'deactivated' not in x]
-    for json_dict in without_deactivated:
-        new_dict = {}
-        for k, v in target_fields.iteritems():
-            new_dict[k] = v(json_dict)
-        output_file.write(unicode(pformat(new_dict)) + u'\n')
-    output_file.write(u"uid\tfirst_name\tlast_name\tsex\tage\n")
-#    for u in api.get_users(uids):
-#        print u.to_tsv().encode('utf-8')
+    processed_users = [
+        process_user(target_fields, user) for user in without_deactivated
+    ]
+    output_file.write(u'\t'.join(target_fields_list) + u'\n')
+    output_file.write(u'\n'.join(
+        [user_dict_to_line(user, target_fields_list)
+         for user in processed_users]
+    ))
 
 
 if __name__ == "__main__":
