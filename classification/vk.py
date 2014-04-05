@@ -110,6 +110,14 @@ def get_required_fields(target_fields):
     return required_fields
 
 
+def user_dict_to_line(user, fields, delimeter=u'\t'):
+    result = u""
+    for field in fields:
+        result += unicode(user[field])
+        result += delimeter
+    return result
+
+
 def process_user(target_fields, user_dict):
     """
     Takes a dict with items like this
