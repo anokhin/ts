@@ -103,6 +103,29 @@ def get_graduation(json_dict):
 get_graduation.required_fields = frozenset([u'education'])
 
 
+def get_school_start(json_dict):
+    """
+    Returns amount of how many years ago the user started
+    his first school (first mentioned on vk).
+    If he has no mentioned school start years, return None
+    """
+    try:
+        schools = json_dict[u'schools']
+    except KeyError:
+        return None
+    MAGICAL_MAX_START_YEAR = 9999
+    start_years = [
+        school.get(u'year_from', MAGICAL_MAX_START_YEAR) for school in schools]
+    if len(start_years) == 0:
+        return None
+    min_year = min(start_years)
+    if min_year == MAGICAL_MAX_START_YEAR:
+        return None
+    current_year = date.today().year
+    return current_year - min_year
+get_school_start.required_fields = frozenset([u'schools'])
+
+
 def get_required_fields(target_fields):
     required_fields = set()
     for k, v in target_fields.iteritems():
