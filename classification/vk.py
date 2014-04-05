@@ -98,6 +98,11 @@ get_has_mobile.required_fields = frozenset([u'has_mobile'])
 
 
 def get_graduation(json_dict):
+    """
+    Returns relative years between current year and graduation year
+    Return value of 5 means the graduation happened 5 years ago.
+    Return value of -5 means the graduation will happen in 5 years.
+    """
     graduation = json_dict.get(u'graduation', None)
     if graduation == 0 or graduation is None:
         return None
