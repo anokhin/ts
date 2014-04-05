@@ -226,8 +226,9 @@ def main():
         u'sex': get_sex,
         u'age': get_age,
         u'graduation': get_graduation,
-        u'school_start_years_ago': get_school_start,
-        u'school_end_years_ago': get_school_end,
+        u'school_start': get_school_start,
+        u'school_end': get_school_end,
+        u'friends_age': get_median_age_of_friends,
     }
     target_fields_list = [k for k in target_fields.iterkeys()]
     required_fields = get_required_fields(target_fields)
