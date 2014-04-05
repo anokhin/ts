@@ -110,6 +110,20 @@ def get_required_fields(target_fields):
     return required_fields
 
 
+def process_user(target_fields, user_dict):
+    """
+    Takes a dict with items like this
+    u'target_field': function_name
+    and a user dict
+    The function must have 'required_fields' value and take user dict as arg
+    returns a dict with target fields
+    """
+    new_dict = {}
+    for k, v in target_fields.iteritems():
+        new_dict[k] = v(user_dict)
+    return new_dict
+
+
 def main():
     token = argv[1]
     user_uid = argv[2]
