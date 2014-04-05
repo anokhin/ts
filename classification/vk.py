@@ -9,7 +9,6 @@ import datetime
 import user
 import io
 import sys
-from pprint import pformat
 from sys import argv
 from api import Api
 from datetime import date
