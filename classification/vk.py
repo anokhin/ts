@@ -9,7 +9,7 @@ import datetime
 import user
 import io
 import sys
-import time
+from pprint import pformat
 from sys import argv
 from api import Api
 from datetime import date
@@ -119,10 +119,25 @@ def main():
         output_file = sys.stdout
     api = VkApi(token)
     uids = api.get_friend_ids(user_uid)
-    fields = ["uid", "first_name", "last_name", "sex", "bdate",
-              "has_mobile", "education"]
-    jsons = [api.get_json(uid, fields) for uid in uids]
+    target_fields = {
+        u'uid': get_uid,
+        u'first_name': get_first_name,
+        u'last_name': get_last_name,
+        u'sex': get_sex,
+        u'age': get_age,
+        u'has_mobile': get_has_mobile,
+        u'graduation': get_graduation
+    }
+    required_fields = get_required_fields(target_fields)
 
+    response_dicts = api.get_jsons(uids, required_fields)
+    without_deactivated = [x for x in response_dicts
+                           if u'deactivated' not in x]
+    for json_dict in without_deactivated:
+        new_dict = {}
+        for k, v in target_fields.iteritems():
+            new_dict[k] = v(json_dict)
+        output_file.write(unicode(pformat(new_dict)) + u'\n')
     output_file.write(u"uid\tfirst_name\tlast_name\tsex\tage\n")
 #    for u in api.get_users(uids):
 #        print u.to_tsv().encode('utf-8')
