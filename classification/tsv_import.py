@@ -1,4 +1,5 @@
 import io
+from sys import argv
 
 
 def get_fields(string, delimiter=u'\t'):
@@ -14,3 +15,8 @@ def parse_tsv(stream, delimiter=u'\t'):
     """
     for line in stream:
         yield get_fields(line, delimiter)
+
+
+if __name__ == '__main__':
+    with io.open(argv[1]) as tsv:
+        print list(parse_tsv(tsv))
