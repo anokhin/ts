@@ -66,10 +66,13 @@ def str_to_int_or_none(string):
         return None
 
 
+def identity(x):
+    return x
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
-        identity = lambda x: x
         conversion_functions = dict(zip(
             parsed_tsv[0],
             [identity] * len(parsed_tsv[0])
