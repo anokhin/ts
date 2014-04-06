@@ -55,4 +55,12 @@ def lists_to_dicts(lists, conversion_functions):
 
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
-        print list(parse_tsv(tsv))
+        parsed_tsv = list(parse_tsv(tsv))
+        identity = lambda x: x
+        conversion_functions = dict(zip(
+            parsed_tsv[0],
+            [identity] * len(parsed_tsv[0])
+        ))
+        dicts = lists_to_dicts(parsed_tsv, conversion_functions)
+        import pprint
+        pprint.pprint(dicts)
