@@ -54,7 +54,7 @@ def lists_to_dicts(lists, conversion_functions):
 
 
 def identity_or_none(x):
-    if x is None:
+    if x is None or x == u'None':
         return None
     return x
 
