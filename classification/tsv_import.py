@@ -75,7 +75,7 @@ if __name__ == '__main__':
         parsed_tsv = list(parse_tsv(tsv))
         conversion_functions = dict(zip(
             parsed_tsv[0],
-            [identity] * len(parsed_tsv[0])
+            [identity_or_none] * len(parsed_tsv[0])
         ))
         dicts = lists_to_dicts(parsed_tsv, conversion_functions)
         import pprint
