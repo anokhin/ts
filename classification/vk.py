@@ -217,10 +217,7 @@ api = None
 def main():
     token = argv[1]
     user_uid = argv[2]
-    if (len(argv) >= 4):
-        output_file = io.open(argv[3], "w", encoding='utf-8')
-    else:
-        output_file = sys.stdout
+
     global api
     api = VkApi(token)
     uids = api.get_friend_ids(user_uid)
@@ -244,7 +241,16 @@ def main():
     processed_users = [
         process_user(target_fields, user) for user in without_deactivated
     ]
-    output_file.write(u'\t'.join(target_fields_list) + u'\n')
+
+    if len(argv) >= 5 and argv[4] == "--append":
+        output_file = io.open(argv[3], "a", encoding='utf-8')
+    else:
+        if (len(argv) == 4):
+            output_file = io.open(argv[3], "w", encoding='utf-8')
+        else:
+            output_file = sys.stdout
+        output_file.write(u'\t'.join(target_fields_list) + u'\n')
+
     output_file.write(u'\n'.join(
         [user_dict_to_line(user, target_fields_list)
          for user in processed_users]
