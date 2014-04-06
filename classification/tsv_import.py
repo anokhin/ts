@@ -59,6 +59,13 @@ def identity_or_none(x):
     return x
 
 
+def str_to_int_or_none(string):
+    try:
+        return int(string)
+    except Exception:
+        return None
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
