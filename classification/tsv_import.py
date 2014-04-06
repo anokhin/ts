@@ -70,20 +70,22 @@ def identity(x):
     return x
 
 
+conversion_functions = {
+    u'sex': str_to_int_or_none,
+    u'age': str_to_int_or_none,
+    u'first_name': identity,
+    u'friends_age': str_to_int_or_none,
+    u'graduation': str_to_int_or_none,
+    u'last_name': identity,
+    u'school_end': str_to_int_or_none,
+    u'school_start': str_to_int_or_none,
+    u'uid': str_to_int_or_none
+}
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
-        conversion_functions = {
-            u'sex': str_to_int_or_none,
-            u'age': str_to_int_or_none,
-            u'first_name': identity,
-            u'friends_age': str_to_int_or_none,
-            u'graduation': str_to_int_or_none,
-            u'last_name': identity,
-            u'school_end': str_to_int_or_none,
-            u'school_start': str_to_int_or_none,
-            u'uid': str_to_int_or_none
-        }
+
         dicts = lists_to_dicts(parsed_tsv, conversion_functions)
         import pprint
         pprint.pprint(dicts)
