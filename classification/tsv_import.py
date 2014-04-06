@@ -17,6 +17,42 @@ def parse_tsv(stream, delimiter=u'\t'):
         yield get_fields(line, delimiter)
 
 
+def lists_to_dicts(lists, conversion_functions):
+    """Arguments:
+        lists - a list of lists, where 1-st sublist is contains column names,
+        all following sublists contain column values.
+        parse_tsv function returns exactly this format.
+
+        conversion_functions - dict like this:
+            {u'field_name': converter_func1,
+             u'age': converter_func2}
+        Keys of this dict must contain only all values from the first sublist
+        of lists. converter_func$ are functions that convert this field from
+        unicode string to arbitrary type suitable for that field.
+
+    Returns a list or dicts, each dict is like this:
+        {u'age': 14,
+         u'name': u'Petya',
+         u'field_name': "value_generated_by_conversion_function"}
+    """
+    field_names = lists[0]
+    if frozenset(field_names) != frozenset(list(
+        conversion_functions.iterkeys()
+    )):
+        raise Exception('lists_to_dicts: field names from lists'
+                        'and field names from conversion functions'
+                        'did not match')
+    converters = [conversion_functions[field] for field in field_names]
+    field_values = lists[1:]
+    result_dicts = [
+        dict(zip(
+            field_names,
+            [converter(value) for converter, value in zip(converters, line)]
+        ))
+        for line in field_values]
+    return result_dicts
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         print list(parse_tsv(tsv))
