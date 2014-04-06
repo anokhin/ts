@@ -53,6 +53,12 @@ def lists_to_dicts(lists, conversion_functions):
     return result_dicts
 
 
+def identity_or_none(x):
+    if x is None:
+        return None
+    return x
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
