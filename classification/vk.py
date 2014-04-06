@@ -195,7 +195,7 @@ def user_dict_to_line(user, fields, delimeter=u'\t'):
     for field in fields:
         result += unicode(user[field])
         result += delimeter
-    return result
+    return result[:-1]
 
 
 def process_user(target_fields, user_dict):
