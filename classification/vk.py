@@ -218,6 +218,11 @@ def process_user(target_fields, user_dict):
 api = None
 
 
+def filter_without_nones(list_of_dicts):
+    return [x for x in list_of_dicts
+            if None not in x.itervalues()]
+
+
 def main():
     token = argv[1]
     user_uid = argv[2]
