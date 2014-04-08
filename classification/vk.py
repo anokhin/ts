@@ -9,6 +9,7 @@ import datetime
 import user
 import io
 import sys
+import numpy
 from sys import argv
 from api import Api
 from datetime import date
@@ -227,6 +228,10 @@ def main():
     token = argv[1]
     user_uid = argv[2]
 
+    num_of_ids = 50
+    max_id = 240 * 1000 * 1000
+    NEED_IDS = 1000
+
     global api
     api = VkApi(token)
     uids = api.get_friend_ids(user_uid)
@@ -243,13 +248,6 @@ def main():
     target_fields_list = [k for k in target_fields.iterkeys()]
     required_fields = get_required_fields(target_fields)
 
-    response_dicts = api.get_jsons(uids, required_fields)
-    without_deactivated = [x for x in response_dicts
-                           if u'deactivated' not in x]
-    processed_users = [
-        process_user(target_fields, user) for user in without_deactivated
-    ]
-
     if len(argv) >= 5 and argv[4] == "--append":
         output_file = io.open(argv[3], "a", encoding='utf-8')
     else:
@@ -259,10 +257,30 @@ def main():
             output_file = sys.stdout
         output_file.write(u'\t'.join(target_fields_list) + u'\n')
 
-    output_file.write(u'\n'.join(
-        [user_dict_to_line(user, target_fields_list)
-         for user in processed_users]
-    ))
+    users_gathered = 0
+    while users_gathered < NEED_IDS:
+        response_dicts = []
+        uids = []
+        for i in range(0, num_of_ids):
+            uid = numpy.random.randint(1, max_id)
+            uids.append(str(uid))
+        for u in api.get_jsons(uids, required_fields):
+            response_dicts.append(u)
+        without_deactivated = [x for x in response_dicts
+                               if u'deactivated' not in x]
+        processed_users = filter_without_nones([
+            process_user(target_fields, user)
+            for user in without_deactivated
+        ])
+        users_gathered += len(processed_users)
+        output_file.write(u'\n'.join(
+            [user_dict_to_line(user, target_fields_list)
+             for user in processed_users]
+        ))
+        if len(processed_users) != 0:
+            output_file.write(u'\n')
+        output_file.flush()
+        print("ids gathered {}".format(users_gathered))
 
 
 if __name__ == "__main__":
