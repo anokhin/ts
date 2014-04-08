@@ -234,7 +234,6 @@ def main():
         u'uid': get_uid,
         u'first_name': get_first_name,
         u'last_name': get_last_name,
-        u'sex': get_sex,
         u'age': get_age,
         u'graduation': get_graduation,
         u'school_start': get_school_start,
