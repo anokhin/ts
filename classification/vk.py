@@ -166,6 +166,8 @@ def get_required_fields(target_fields):
 
 
 def median(lst):
+    if len(lst) == 0:
+        return None
     return sorted(lst)[len(lst)//2]
 
 
@@ -188,7 +190,7 @@ def get_median_age_of_friends(json_dict):
         ages.extend([user[u'age']
                      for user in processed_users if user[u'age'] is not None])
 
-    return unicode(str(median(ages)))
+    return median(ages)
 get_median_age_of_friends.required_fields = frozenset([u'age'])
 
 
