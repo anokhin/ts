@@ -59,8 +59,11 @@ class VkApi(Api):
         if birth_date_str:
             parts = birth_date_str.split('.')
             if len(parts) == 3:
-                return datetime.date(
-                    int(parts[2]), int(parts[1]), int(parts[0]))
+                try:
+                    return datetime.date(
+                        int(parts[2]), int(parts[1]), int(parts[0]))
+                except ValueError:
+                    return None
 
 
 def get_uid(json_dict):
