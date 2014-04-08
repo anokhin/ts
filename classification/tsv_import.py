@@ -71,7 +71,6 @@ def identity(x):
 
 
 conversion_functions = {
-    u'sex': str_to_int_or_none,
     u'age': str_to_int_or_none,
     u'first_name': identity,
     u'friends_age': str_to_int_or_none,
