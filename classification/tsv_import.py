@@ -77,8 +77,8 @@ def dicts_to_lists(dicts, fields_order):
         fields_order is a list of text field names, like this:
             [u'age', u'graduation']
 
-        Returns a generator of lists, where each sublist is of length
-        len(fields_order) and has values of those fields in it.
+    Returns a generator of lists, where each sublist is of length
+    len(fields_order) and has values of those fields in it.
     """
     for dict in dicts:
         yield [dict[field] for field in fields_order]
