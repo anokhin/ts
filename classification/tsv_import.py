@@ -112,11 +112,11 @@ if __name__ == '__main__':
         parsed_tsv = list(parse_tsv(tsv))
 
         dicts = lists_to_dicts(parsed_tsv, conversion_functions)
-        lists = dicts_to_lists(dicts, [
+        print list(dicts_to_lists(dicts, [
             u'age',
             u'friends_age',
             u'graduation',
             u'school_end',
             u'school_start'
-        ])
-        print list(lists)
+        ]))
+        print list(extract_result_from_dicts(dicts, u'age'))
