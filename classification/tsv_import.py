@@ -70,6 +70,19 @@ def identity(x):
     return x
 
 
+def dicts_to_lists(dicts, fields_order):
+    """Arguments:
+        dicts is a list of dicts, like the ones returned by lists_to_dicts
+
+        fields_order is a list of text field names, like this:
+            [u'age', u'graduation']
+
+        Returns a generator of lists, where each sublist is of length
+        len(fields_order) and has values of those fields in it.
+    """
+    pass
+
+
 conversion_functions = {
     u'age': str_to_int_or_none,
     u'first_name': identity,
