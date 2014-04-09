@@ -83,6 +83,19 @@ def dicts_to_lists(dicts, fields_order):
     for dict in dicts:
         yield [dict[field] for field in fields_order]
 
+
+def extract_result_from_dicts(dicts, result_field):
+    """Arguments:
+        dicts is a list of dicts, like the ones returned by lists_to_dicts
+
+        result_field is a string with name of the field we want to return
+
+    Returns a generator with values of that result_field
+    """
+    for dict in dicts:
+        yield dict[result_field]
+
+
 conversion_functions = {
     u'age': str_to_int_or_none,
     u'first_name': identity,
