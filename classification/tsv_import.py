@@ -80,8 +80,8 @@ def dicts_to_lists(dicts, fields_order):
         Returns a generator of lists, where each sublist is of length
         len(fields_order) and has values of those fields in it.
     """
-    pass
-
+    for dict in dicts:
+        yield [dict[field] for field in fields_order]
 
 conversion_functions = {
     u'age': str_to_int_or_none,
