@@ -99,5 +99,11 @@ if __name__ == '__main__':
         parsed_tsv = list(parse_tsv(tsv))
 
         dicts = lists_to_dicts(parsed_tsv, conversion_functions)
-        import pprint
-        pprint.pprint(dicts)
+        lists = dicts_to_lists(dicts, [
+            u'age',
+            u'friends_age',
+            u'graduation',
+            u'school_end',
+            u'school_start'
+        ])
+        print list(lists)
