@@ -106,7 +106,7 @@ def break_on_intervals(results, intervals):
         list with length len(results), where each result is replaced with
         an interval to which it belongs
     """
-    pass
+    return [choose_interval(result, intervals) for result in results]
 
 
 def choose_interval(result, intervals):
