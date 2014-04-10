@@ -11,6 +11,8 @@ class GaussianNB:
 
         Arguments:
             classes - list of pairs, each pair corresponds to min and max
-            values of that class (for example (0,10) corresponds to 0-10
+            values of that class (for example (0,10) corresponds to 0-10.
+            Must not overlap, each next pair's values must be bigger than
+            previous pair's values
         """
         pass
