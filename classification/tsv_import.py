@@ -96,6 +96,18 @@ def extract_result_from_dicts(dicts, result_field):
         yield dict[result_field]
 
 
+def break_on_intervals(results, intervals):
+    """Arguments:
+        results - list of results (ages)
+
+        intervals - list of pairs like this:
+            [(0,10), (11,20), (21,40)]
+    Returns:
+        list with length len(results), where each result is replaced with
+        an interval to which it belongs
+    """
+    pass
+
 conversion_functions = {
     u'age': str_to_int_or_none,
     u'first_name': identity,
