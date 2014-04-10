@@ -11,7 +11,34 @@ class GaussianNB:
             in the same order. Each value here must first be added with
             add_classes method.
         """
-        pass
+        self.__check_classes(results)
+        assert len(samples) == len(results)
+        self.__class_prior_probabilities = {
+            _class: 0.0 for _class in self.__classes}
+        for result in results:
+            self.__class_prior_probabilities[result] += 1.0 / len(results)
+
+        # calculate mean and variance of each feature for each class
+        total_features = len(samples[0])
+        self.__means = {}
+        self.__variances = {}
+        for _class in self.__classes:
+            samples_of_this_class = [
+                sample for sample, result in zip(samples, results)
+                if result == _class]
+
+            for feature_index in range(total_features):
+                feature_values = [
+                    sample[feature_index] for sample in samples_of_this_class]
+                self.__means[(_class, feature_index)] = numpy.mean(
+                    feature_values)
+                self.__variances[(_class, feature_index)] = gaussian_variance(
+                    feature_values)
+
+    def __check_classes(self, results):
+        for result in results:
+            if result not in self.classes:
+                raise Exception("{} - no such class".format(result))
 
     def predict(self, sample):
         pass
