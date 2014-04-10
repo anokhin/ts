@@ -40,7 +40,7 @@ class GaussianNB:
 
     def __check_classes(self, results):
         for result in results:
-            if result not in self.classes:
+            if result not in self.__classes:
                 raise Exception("{} - no such class".format(result))
 
     def predict(self, sample):
