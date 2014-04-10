@@ -21,3 +21,4 @@ class Api(object):
         except requests.exceptions.RequestException as re:
             print "A n API call failed with exception {}".format(re)
             raise
+
