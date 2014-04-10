@@ -26,4 +26,4 @@ class GaussianNB:
             Must not overlap, each next pair's values must be bigger than
             previous pair's values
         """
-        self.classes = classes
+        self.__classes = classes
