@@ -3,21 +3,16 @@ Facebook Graph API implementation stub
 https://developers.facebook.com/docs/graph-api/reference/
 """
 
-import sys
 import re
 import datetime
-import user
-import json
-
 import numpy as np
-from linear_regression import FbLinRegVectorizer, LinearRegression
-from api import Api
 
-#create file my_secrect_token.py and define variable FB_TOKEN with facebook token there
-#or comment this import if you don't want to update training set by your friends data
-import my_secrect_token
+import user
+from api import Api
+from linear_regression import FbLinRegVectorizer, LinearRegression
 
 __author__ = 'Nikolay Anokhin'
+
 
 class FbApi(Api):
     endpoint = "https://graph.facebook.com/{method}"
@@ -56,40 +51,77 @@ class FbApi(Api):
                     date = datetime.date(int(parts[2]), int(parts[0]), int(parts[1]))
                 else:
                     date = datetime.date(int(parts[0]), int(parts[1]), int(parts[2]))
-                years = int((date.today() - date).days / 365.2425)
-                return years
+                return date
         return None
 
+import glob
+import json
+import os
+#create file my_secrect_token.py and define variable FB_TOKEN with facebook token there
+#or comment this import if you don't want to update training set by your friends data
+from my_secrect_token import FB_TOKEN
 
 class UserSerializer:
     def __init__(self):
         """
-        read user data from file to dict self.users_data
+        read user data from .json files from self.data_dir dir and write it to dict self.users_data
         """
-        self.file_path = "users_data_linear_regression.json"
-        self.file = None
+
+        #dir for single .json files
+        self.data_dir = "acquired_data"
+        #merged dict will be writen here
+        self.file_path = "users_data_merged.json"
+        self.users_data = {}
+
+        if not os.path.exists(self.data_dir):
+            os.makedirs(self.data_dir)
+
         try:
-            self.file = open(self.file_path, "r")
-            self.users_data = json.load(self.file)
-            self.file.close()
+            pattern = os.path.join(self.data_dir, "*.json")
+            files_to_merge = sorted(glob.glob(pattern))
+            files_to_merge = map(lambda f: os.path.abspath(f), files_to_merge)
+            self.file_path = os.path.abspath(self.file_path)
+
+            if not self.file_path in files_to_merge:
+                files_to_merge = [self.file_path] + files_to_merge
+
+            for cur_filename in files_to_merge:
+                cur_file = open(cur_filename, "r")
+                if cur_file is None:
+                    continue
+                cur_data = json.load(cur_file)
+                self.users_data.update(cur_data)
+                cur_file.close()
+
         except (IOError, ValueError):
-            self.users_data = {}
+            pass
 
     def update_data_from_server(self):
         try:
-            token = my_secrect_token.FB_TOKEN
-            api = FbApi(token)
+            api = FbApi(FB_TOKEN)
+
+            local_dict = {}
+
+            my_json = api.get_user_json("me")
+            my_id = my_json["id"]
+            local_dict[my_id] = my_json
 
             for uid in api.get_friend_ids("me"):
-                self.users_data[uid] = api.get_user_json(uid)
+                local_dict[uid] = api.get_user_json(uid)
 
+            local_path = os.path.join(self.data_dir, "user{}.json".format(my_id))
+            fp = open(local_path, "w")
+            json.dump(local_dict, fp, indent=1, sort_keys=True)
+            fp.close()
+
+            self.users_data.update(local_dict)
         except (NameError, AttributeError):
             print "Token was not found. Add your token to extend learning set!"
 
     def save(self):
-        self.file = open(self.file_path, "w")
-        json.dump(self.users_data, self.file, indent=1, sort_keys=True)
-        self.file.close()
+        fp = open(self.file_path, "w")
+        json.dump(self.users_data, fp, indent=1, sort_keys=True)
+        fp.close()
 
 def main():
     serial = UserSerializer()
