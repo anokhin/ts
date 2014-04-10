@@ -44,7 +44,20 @@ class GaussianNB:
                 raise Exception("{} - no such class".format(result))
 
     def predict(self, sample):
-        pass
+        predicted_probabilities = {
+            self.__classes_prior_probabilities[_class] *
+            numpy.prod([
+                GaussianNB.__gaussian_likelihood(
+                    value,
+                    self.__means[(_class, index)],
+                    self.__variances[(_class, index)]
+                )
+                for value, index in zip(sample, range(len(sample)))
+            ]):
+            _class
+            for _class in self.__classes
+        }
+        return predicted_probabilities[max(predicted_probabilities.keys())]
 
     @staticmethod
     def __gaussian_likelihood(value, mean, variance):
