@@ -108,6 +108,19 @@ def break_on_intervals(results, intervals):
     """
     pass
 
+
+def choose_interval(result, intervals):
+    """Arguments:
+        result - number
+
+        intervals - list of pairs like this:
+            [(0,10), (11,20), (21,40)]
+
+    Returns:
+        the one interval where result belongs
+    """
+    pass
+
 conversion_functions = {
     u'age': str_to_int_or_none,
     u'first_name': identity,
