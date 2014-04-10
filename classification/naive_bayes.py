@@ -27,3 +27,9 @@ class GaussianNB:
             previous pair's values
         """
         self.__classes = classes
+
+
+def gaussian_variance(numbers):
+    mean = numpy.mean(numbers)
+    squared_differences = (numbers - mean) ** 2
+    return sum(squared_differences) / len(numbers)
