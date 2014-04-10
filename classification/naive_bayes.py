@@ -61,6 +61,8 @@ class GaussianNB:
 
     @staticmethod
     def __gaussian_likelihood(value, mean, variance):
+        if value is None:
+            return 1
         return (e ** (-1) * ((float(value) - mean) ** 2) / (2 * variance)) / \
             sqrt(2.0 * pi * variance)
 
