@@ -147,4 +147,7 @@ if __name__ == '__main__':
             u'school_end',
             u'school_start'
         ]))
-        print list(extract_result_from_dicts(dicts, u'age'))
+        ages = list(extract_result_from_dicts(dicts, u'age'))
+        intervals = [(0, 10), (11, 15), (16, 19), (20, 24), (25, 30),
+                     (31, 40), (41, 50), (51, 60), (61, 70), (71, 100)]
+        print break_on_intervals(ages, intervals)
