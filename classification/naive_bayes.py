@@ -1,4 +1,7 @@
 import numpy
+from math import e
+from math import sqrt
+from math import pi
 
 
 class GaussianNB:
@@ -42,6 +45,11 @@ class GaussianNB:
 
     def predict(self, sample):
         pass
+
+    @staticmethod
+    def __gaussian_likelihood(value, mean, variance):
+        return (e ** (-1) * ((float(value) - mean) ** 2) / (2 * variance)) / \
+            sqrt(2.0 * pi * variance)
 
     def add_classes(self, classes):
         """Manually configure, how big the classes for our regression are,
