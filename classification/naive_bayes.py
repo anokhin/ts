@@ -1,11 +1,11 @@
 class GaussianNB:
-    def fit(samples, results):
+    def fit(self, samples, results):
         pass
 
-    def predict(sample):
+    def predict(self, sample):
         pass
 
-    def add_classes(classes):
+    def add_classes(self, classes):
         """Manually configure, how big the classes for our regression are,
         for example 0-10, 11-20, 21-30, etc.
 
