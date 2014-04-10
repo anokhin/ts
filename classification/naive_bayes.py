@@ -1,3 +1,6 @@
+import numpy
+
+
 class GaussianNB:
     def fit(self, samples, results):
         """Arguments:
