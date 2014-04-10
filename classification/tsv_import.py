@@ -96,6 +96,34 @@ def extract_result_from_dicts(dicts, result_field):
         yield dict[result_field]
 
 
+def break_on_intervals(results, intervals):
+    """Arguments:
+        results - list of results (ages)
+
+        intervals - list of pairs like this:
+            [(0,10), (11,20), (21,40)]
+    Returns:
+        list with length len(results), where each result is replaced with
+        an interval to which it belongs
+    """
+    return [choose_interval(result, intervals) for result in results]
+
+
+def choose_interval(result, intervals):
+    """Arguments:
+        result - number
+
+        intervals - list of pairs like this:
+            [(0,10), (11,20), (21,40)]
+
+    Returns:
+        the one interval where result belongs
+    """
+    for first, second in intervals:
+        if first <= result <= second:
+            return first, second
+    raise Exception("Result didn't belong in an interval")
+
 conversion_functions = {
     u'age': str_to_int_or_none,
     u'first_name': identity,
@@ -119,4 +147,7 @@ if __name__ == '__main__':
             u'school_end',
             u'school_start'
         ]))
-        print list(extract_result_from_dicts(dicts, u'age'))
+        ages = list(extract_result_from_dicts(dicts, u'age'))
+        intervals = [(0, 10), (11, 15), (16, 19), (20, 24), (25, 30),
+                     (31, 40), (41, 50), (51, 60), (61, 70), (71, 100)]
+        print break_on_intervals(ages, intervals)
