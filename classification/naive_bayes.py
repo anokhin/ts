@@ -1,5 +1,13 @@
 class GaussianNB:
     def fit(self, samples, results):
+        """Arguments:
+            samples - list of lists, each sublist has the same length and
+            contains values of features.
+
+            results - list of classes, one for each sample in samples,
+            in the same order. Each value here must first be added with
+            add_classes method.
+        """
         pass
 
     def predict(self, sample):
