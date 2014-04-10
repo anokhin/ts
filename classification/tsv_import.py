@@ -119,7 +119,10 @@ def choose_interval(result, intervals):
     Returns:
         the one interval where result belongs
     """
-    pass
+    for first, second in intervals:
+        if first <= result <= second:
+            return first, second
+    raise Exception("Result didn't belong in an interval")
 
 conversion_functions = {
     u'age': str_to_int_or_none,
