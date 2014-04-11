@@ -5,7 +5,7 @@ import random
 from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS
 from tsv_import import get_data_from_file, get_ages, determine_intervals
 from tsv_import import break_on_intervals
-from naive_bayes import GaussianNB, prediction_score
+from naive_bayes import prediction_score
 
 
 def choose_random_items(data, results, amount):
@@ -32,7 +32,8 @@ def cross_val_score(classifier_class, data, results, cv):
     return [
         prediction_score(
             classifier_class(),
-            *choose_random_items(data, results, len(data) / cv)
+            *choose_random_items(data, results, len(data) / cv),
+            use_sklearn_nb=use_sklearn_nb
         )
         for i in range(cv)
     ]
@@ -52,6 +53,10 @@ def main():
         '--cv_groups', action='store', type=int,
         help='Amount of groups for cross-validation. If not provided, use 5'
     )
+    parser.add_argument(
+        '--sklearn_nb', action='store_true',
+        help='Use sklearn GaussianNB instead of included in this project'
+    )
     args = parser.parse_args()
     tsv_filename = args.data
     intervals = args.intervals or 5
@@ -59,6 +64,14 @@ def main():
     if tsv_filename is None:
         print "Please provide tsv file"
         sys.exit(1)
+
+    global use_sklearn_nb
+    use_sklearn_nb = args.sklearn_nb
+
+    if use_sklearn_nb:
+        from sklearn.naive_bayes import GaussianNB
+    else:
+        from naive_bayes import GaussianNB
 
     data = get_data_from_file(
         tsv_filename,
@@ -71,10 +84,21 @@ def main():
         intervals, ages
     )
     age_classes = break_on_intervals(ages, age_intervals)
-
-    scores = cross_val_score(
-        GaussianNB, data, age_classes, amount_of_groups
+    numbers_of_intervals = dict(
+        [(interval, i) for i, interval in enumerate(age_intervals)]
     )
+    numbered_classes = [
+        numbers_of_intervals[age_class] for age_class in age_classes
+    ]
+
+    if not use_sklearn_nb:
+        scores = cross_val_score(
+            GaussianNB, data, age_classes, amount_of_groups
+        )
+    else:
+        scores = cross_val_score(
+            GaussianNB, data, numbered_classes, amount_of_groups
+        )
     print scores
 
 

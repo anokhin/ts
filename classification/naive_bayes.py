@@ -79,8 +79,22 @@ def gaussian_variance(numbers):
 def prediction_score(
     classifier,
     data_to_predict, prediction_correct_results,
-    data_to_train, training_results
+    data_to_train, training_results,
+    use_sklearn_nb = False
 ):
+    if use_sklearn_nb:
+        data_to_predict = numpy.array(data_to_predict)
+        prediction_correct_results = numpy.array(prediction_correct_results)
+        data_to_train = numpy.array(data_to_train)
+        training_results = numpy.array(training_results)
+        print "data_to_predict:\n%s" % data_to_predict
+        print "prediction_correct_results:\n%s" % prediction_correct_results
+        print "data_to_train:\n%s" % data_to_train
+        print "training_results:\n%s" % training_results
+        print "{} == {}".format(
+            len(data_to_predict), len(prediction_correct_results))
+        print "{} == {}".format(
+            len(data_to_train), len(training_results))
     classifier.fit(data_to_train, training_results)
     predicted_results = [
         classifier.predict(sample) for sample in data_to_predict
