@@ -135,6 +135,26 @@ conversion_functions = {
     u'uid': str_to_int_or_none
 }
 
+
+def get_data_from_file(filename, fields, conversion_functions):
+    """Arguments:
+        filename - name of file to read
+
+        fields - list of field names, ordered
+
+        conversion functions - dict {u'field_name': conversion_function}
+
+    Returns:
+        list of sublists of features
+        (each sublist is a list of features of some particular user)
+    """
+    with io.open(filename) as tsv_file:
+        parsed_tsv = list(parse_tsv(tsv_file))
+        dicts = lists_to_dicts(parsed_tsv, conversion_functions)
+        user_lists = list(dicts_to_lists(dicts, fields))
+        return user_lists
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
