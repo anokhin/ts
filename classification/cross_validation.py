@@ -1,11 +1,17 @@
 import argparse
-
-from sklearn import cross_validation
+import sys
+import random
 
 from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS
 from tsv_import import get_data_from_file, get_ages, determine_intervals
 from tsv_import import break_on_intervals
 from naive_bayes import GaussianNB
+
+
+def choose_random_items(data, results, amount):
+    """Returns random sample from data and its matching sample of results"""
+    chosen_pairs = random.sample(zip(data, results), amount)
+    return zip(*chosen_pairs)
 
 
 def main():
