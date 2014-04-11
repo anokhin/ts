@@ -56,7 +56,6 @@ if __name__ == '__main__':
     age_classes = tsv_import.break_on_intervals(ages, AGE_INTERVALS)
 
     classifier = naive_bayes.GaussianNB()
-    classifier.add_classes(AGE_INTERVALS)
     classifier.fit(user_lists, age_classes)
 
     features_lists_to_predict = tsv_import.get_data_from_file(
