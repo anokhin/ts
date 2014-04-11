@@ -7,6 +7,21 @@ import naive_bayes
 from tsv_import import str_to_int_or_none
 from tsv_import import identity
 
+CONVERSION_FUNCTIONS = {
+    u'age': str_to_int_or_none,
+    u'first_name': identity,
+    u'friends_age': str_to_int_or_none,
+    u'graduation': str_to_int_or_none,
+    u'last_name': identity,
+    u'school_end': str_to_int_or_none,
+    u'school_start': str_to_int_or_none,
+    u'uid': str_to_int_or_none
+}
+
+FEATURE_FIELDS = [
+    u'age', u'school_start', u'school_end', u'graduation',
+    u'friends_age']
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Predict age for chosen ids')
     parser.add_argument(
@@ -32,19 +47,7 @@ if __name__ == '__main__':
         print "Please provide predict file"
         sys.exit(1)
 
-    CONVERSION_FUNCTIONS = {
-        u'age': str_to_int_or_none,
-        u'first_name': identity,
-        u'friends_age': str_to_int_or_none,
-        u'graduation': str_to_int_or_none,
-        u'last_name': identity,
-        u'school_end': str_to_int_or_none,
-        u'school_start': str_to_int_or_none,
-        u'uid': str_to_int_or_none
-    }
-    FEATURE_FIELDS = [
-        u'age', u'school_start', u'school_end', u'graduation',
-        u'friends_age']
+
     user_lists = tsv_import.get_data_from_file(tsv_filename,
                                                FEATURE_FIELDS,
                                                CONVERSION_FUNCTIONS)
