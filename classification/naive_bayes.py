@@ -45,7 +45,7 @@ class GaussianNB:
 
     def predict(self, sample):
         predicted_probabilities = {
-            self.__classes_prior_probabilities[_class] *
+            self.__class_prior_probabilities[_class] *
             numpy.prod([
                 GaussianNB.__gaussian_likelihood(
                     value,
