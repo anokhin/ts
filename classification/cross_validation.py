@@ -3,6 +3,7 @@ import sys
 import random
 import numpy
 
+from naive_bayes import GaussianNB
 from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS, FRIENDS_INDEX
 from tsv_import import get_data_from_file, get_friends, determine_intervals
 from tsv_import import break_on_intervals
@@ -69,8 +70,7 @@ def cross_val_regression_score(classifier_class, data, results, cv, friends):
             classifier_class,
             *choose_random_items_with_friends(
                 data, results, len(data) / cv, friends
-            ),
-            use_sklearn_nb=use_sklearn_nb
+            )
         )
         for i in range(cv)
     ]
@@ -80,17 +80,11 @@ def regression_score(
     classifier_class,
     data_to_predict, results_to_predict,
     data_to_train, training_results,
-    friends_to_predict,
-    use_sklearn_nb
+    friends_to_predict
 ):
     classifier = classifier_class()
-    if use_sklearn_nb:
-        data_to_predict = numpy.array(data_to_predict)
-        prediction_correct_results = numpy.array(prediction_correct_results)
-        data_to_train = numpy.array(data_to_train)
-        training_results = numpy.array(training_results)
-
     classifier.fit(data_to_train, training_results)
+
     predicted_results = [
         classifier.predict(sample) for sample in data_to_predict
     ]
@@ -118,10 +112,6 @@ def main():
         '--cv_groups', action='store', type=int,
         help='Amount of groups for cross-validation. If not provided, use 5'
     )
-    parser.add_argument(
-        '--sklearn_nb', action='store_true',
-        help='Use sklearn GaussianNB instead of included in this project'
-    )
     args = parser.parse_args()
     tsv_filename = args.data
     intervals = args.intervals or 5
@@ -130,15 +120,7 @@ def main():
         print "Please provide tsv file"
         sys.exit(1)
 
-    global use_sklearn_nb
-    use_sklearn_nb = args.sklearn_nb
-
     print "Feature fields: %s" % FEATURE_FIELDS
-
-    if use_sklearn_nb:
-        from sklearn.naive_bayes import GaussianNB
-    else:
-        from naive_bayes import GaussianNB
 
     data = get_data_from_file(
         tsv_filename,
@@ -167,6 +149,8 @@ def main():
         GaussianNB, data, age_classes, amount_of_groups, ages
     )
     print scores
+    print "Mean score (of scores above):"
+    print numpy.mean(scores)
 
 
 if __name__ == '__main__':
