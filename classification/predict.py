@@ -26,6 +26,8 @@ FEATURE_FIELDS = [
     u'subscriptions', u'photos', u'friends'
 ]
 
+FRIENDS_INDEX = FEATURE_FIELDS.index(u'friends')
+
 
 def load_training_data(tsv_filename, amount_of_intervals, classifier_class):
     user_lists = tsv_import.get_data_from_file(
@@ -39,6 +41,11 @@ def load_training_data(tsv_filename, amount_of_intervals, classifier_class):
     )
     age_classes = tsv_import.break_on_intervals(ages, age_intervals)
     classifier = classifier_class()
+
+    # delete friends column from user_lists
+    for user_features in user_lists:
+        user_features.pop(FRIENDS_INDEX)
+
     classifier.fit(user_lists, age_classes)
     return age_intervals, user_lists, classifier
 
@@ -78,5 +85,8 @@ if __name__ == '__main__':
         predict_filename, FEATURE_FIELDS, CONVERSION_FUNCTIONS)
 
     print FEATURE_FIELDS
+
     for user_features in features_lists_to_predict:
+        # delete friends column
+        user_features.pop(FRIENDS_INDEX)
         print user_features, classifier.predict(user_features)
