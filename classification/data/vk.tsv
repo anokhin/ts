@@ -1,5 +1,4 @@
 school_end	first_name	last_name	uid	age	friends_age	graduation	school_start
-14	Burritto	Gonsalez	22813361	93	30	9	25
 17	Елена	Гвоздь	5358493	34	30	13	26
 31	Галина	Лысенко	161366368	48	14	21	42
 14	Оксана	Ярмоленко	8745582	31	29	9	18
@@ -18,7 +17,6 @@ school_end	first_name	last_name	uid	age	friends_age	graduation	school_start
 7	Ольга	Муратова	93200663	25	23	-1	18
 9	Леонид	Ванеев	113727601	25	25	4	19
 17	Светлана	Максимова	136493398	34	27	12	27
-11	Владимир	Скубенко	7801250	93	27	4	15
 10	Екатерина	Квашнина	35346632	26	26	4	21
 11	Сергей	Сушкин	141402007	25	22	5	20
 23	Олег	Олейник	7629687	38	32	13	32
@@ -443,7 +441,6 @@ school_end	first_name	last_name	uid	age	friends_age	graduation	school_start
 11	Настя	Зубко	17304014	29	31	11	23
 8	Елена	Ларина	207687481	25	24	3	19
 12	Виктория	Супрун	69540944	29	24	7	23
-68	Vasil	Papyan	50673098	27	27	0	79
 2	David	Nalbandian	102235095	19	21	-2	14
 1	Оленька	Подстрелова	42283177	19	24	-3	12
 3	Юлия	Казакова	106922155	21	21	-1	14
@@ -627,4 +624,3 @@ school_end	first_name	last_name	uid	age	friends_age	graduation	school_start
 17	Кирилл	Маслов	2688569	36	30	11	29
 9	Анастасия	Ляшевская	102131690	25	26	4	19
 9	Юлия	Ярыгина	35481579	26	26	4	11
-364	Alexander	Ravenholm	884564	24	24	3	375
