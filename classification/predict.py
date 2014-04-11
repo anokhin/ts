@@ -43,12 +43,14 @@ if __name__ == '__main__':
             AGE_INTERVALS = [(0, 16), (17, 19),
                              (20, 23), (24, 29), (30, 34), (35, 39),
                              (40, 44), (45, 49), (50, 59), (60, 99)]
+            FEATURE_FIELDS = [
+                u'age', u'school_start', u'school_end', u'graduation',
+                u'friends_age']
             parsed_tsv = list(tsv_import.parse_tsv(tsv_file))
             dicts = tsv_import.lists_to_dicts(parsed_tsv, CONVERSION_FUNCTIONS)
             user_lists = list(tsv_import.dicts_to_lists(
                 dicts,
-                [u'age', u'school_start', u'school_end', u'graduation',
-                 u'friends_age']
+                FEATURE_FIELDS
             ))
             ages = [user[0] for user in user_lists]
             age_intervals = tsv_import.break_on_intervals(ages, AGE_INTERVALS)
