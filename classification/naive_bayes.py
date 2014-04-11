@@ -39,6 +39,8 @@ class GaussianNB:
                 self.__variances[(_class, feature_index)] = gaussian_variance(
                     feature_values)
 
+        return self
+
     def __check_classes(self, results):
         for result in results:
             if result not in self.__classes:
