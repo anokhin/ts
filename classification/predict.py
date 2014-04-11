@@ -12,13 +12,18 @@ if __name__ == '__main__':
     parser.add_argument(
         '--predict',
         action='store', metavar='FILE',
-        help='filename of tsv file with vk users to classify')
+        help='Filename of tsv file with vk users to classify')
     parser.add_argument(
         '--train', action='store', metavar='FILE',
-        help='filename of tsv file with training data'
+        help='Filename of tsv file with training data'
+    )
+    parser.add_argument(
+        '--intervals', action='store', type=int,
+        help='Amount of intervals of ages. If not provided, will use 5'
     )
     args = parser.parse_args()
     tsv_filename = args.train
+    amount_of_intervals = args.intervals or 5
     predict_filename = args.predict
     if tsv_filename is None:
         print "Please provide tsv file"
@@ -37,9 +42,6 @@ if __name__ == '__main__':
         u'school_start': str_to_int_or_none,
         u'uid': str_to_int_or_none
     }
-    AGE_INTERVALS = [(0, 16), (17, 19),
-                     (20, 23), (24, 29), (30, 34), (35, 39),
-                     (40, 44), (45, 49), (50, 59), (60, 99)]
     FEATURE_FIELDS = [
         u'age', u'school_start', u'school_end', u'graduation',
         u'friends_age']
@@ -47,12 +49,15 @@ if __name__ == '__main__':
                                                FEATURE_FIELDS,
                                                CONVERSION_FUNCTIONS)
     ages = tsv_import.get_ages(user_lists, FEATURE_FIELDS)
+    AGE_INTERVALS = tsv_import.determine_intervals(
+        amount_of_intervals, ages)
+    print "Using age intervals: %s" % AGE_INTERVALS
 
-    age_intervals = tsv_import.break_on_intervals(ages, AGE_INTERVALS)
+    age_classes = tsv_import.break_on_intervals(ages, AGE_INTERVALS)
 
     classifier = naive_bayes.GaussianNB()
     classifier.add_classes(AGE_INTERVALS)
-    classifier.fit(user_lists, age_intervals)
+    classifier.fit(user_lists, age_classes)
 
     features_lists_to_predict = tsv_import.get_data_from_file(
         predict_filename, FEATURE_FIELDS, CONVERSION_FUNCTIONS)
