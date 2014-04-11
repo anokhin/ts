@@ -74,3 +74,20 @@ def gaussian_variance(numbers):
     mean = numpy.mean(numbers)
     squared_differences = (numbers - mean) ** 2
     return sum(squared_differences) / len(numbers)
+
+
+def prediction_score(
+    classifier,
+    data_to_predict, prediction_correct_results,
+    data_to_train, training_results
+):
+    classifier.fit(data_to_train, training_results)
+    predicted_results = [
+        classifier.predict(sample) for sample in data_to_predict
+    ]
+    matched_results = [
+        True for correct, predicted
+        in zip(prediction_correct_results, predicted_results)
+        if correct == predicted
+    ]
+    return float(len(matched_results)) / float(len(data_to_predict))
