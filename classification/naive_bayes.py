@@ -87,15 +87,16 @@ def prediction_score(
         prediction_correct_results = numpy.array(prediction_correct_results)
         data_to_train = numpy.array(data_to_train)
         training_results = numpy.array(training_results)
-        print "data_to_predict:\n%s" % data_to_predict
-        print "prediction_correct_results:\n%s" % prediction_correct_results
-        print "data_to_train:\n%s" % data_to_train
-        print "training_results:\n%s" % training_results
-        print "{} == {}".format(
-            len(data_to_predict), len(prediction_correct_results))
-        print "{} == {}".format(
-            len(data_to_train), len(training_results))
     classifier.fit(data_to_train, training_results)
+    if use_sklearn_nb:
+        print classifier.class_prior_
+    else:
+        print classifier._GaussianNB__class_prior_probabilities
+        import pprint
+        print "===========means============"
+        pprint.pprint(classifier._GaussianNB__means)
+        print "============variances============"
+        pprint.pprint(classifier._GaussianNB__variances)
     predicted_results = [
         classifier.predict(sample) for sample in data_to_predict
     ]
