@@ -28,6 +28,14 @@ def choose_random_items(data, results, amount):
     return chosen_data, chosen_results, unchosen_data, unchosen_results
 
 
+def cross_val_score(classifier_class, data, results, cv):
+    return [
+        prediction_score(
+            classifier_class(),
+            *choose_random_items(data, results, len(data) / cv)
+        )
+        for i in range(cv)
+    ]
 
 
 def main():
