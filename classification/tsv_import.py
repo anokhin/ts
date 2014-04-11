@@ -188,8 +188,8 @@ def get_data_from_file(filename, fields, conversion_functions):
         return user_lists
 
 
-def get_ages(user_lists, fields):
-    age_index = fields.index(u'age')
+def get_friends(user_lists, fields):
+    age_index = fields.index(u'friends')
     return [features[age_index] for features in user_lists]
 
 
