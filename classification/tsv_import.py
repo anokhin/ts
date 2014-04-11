@@ -108,7 +108,7 @@ def determine_intervals(amount_of_intervals, numbers):
     lower_limits = sorted(list(set(lower_limits)))
     intervals = [pair for pair in zip(
         lower_limits,
-        [x - 1 for x in lower_limits][1:] + [sorted_numbers[-1]]
+        [x - 1 for x in lower_limits][1:] + [max(100, sorted_numbers[-1])]
     )]
     return intervals
 
