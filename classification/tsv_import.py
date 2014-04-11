@@ -1,20 +1,23 @@
 import io
 from sys import argv
+import re
 
 
-def get_fields(string, delimiter=u'\t'):
+PATTERN = re.compile(r'''((?:[^,"']|"[^"]*"|'[^']*')+)''')
+
+
+def get_fields(string):
     """Returns a list of fields in a line, separated by delimiter"""
-    fields = string.strip().split(delimiter)
-    return fields
+    return PATTERN.split(string.strip())[1::2]
 
 
-def parse_tsv(stream, delimiter=u'\t'):
+def parse_tsv(stream):
     """Takes a stream
     Returns a generator of lists,
     those sublists are lists of fields for each line
     """
     for line in stream:
-        yield get_fields(line, delimiter)
+        yield get_fields(line)
 
 
 def lists_to_dicts(lists, conversion_functions):
@@ -142,14 +145,16 @@ def choose_interval(result, intervals):
     raise Exception("Result didn't belong in an interval")
 
 conversion_functions = {
-    u'age': str_to_int_or_none,
-    u'first_name': identity,
-    u'friends_age': str_to_int_or_none,
-    u'graduation': str_to_int_or_none,
-    u'last_name': identity,
-    u'school_end': str_to_int_or_none,
-    u'school_start': str_to_int_or_none,
-    u'uid': str_to_int_or_none
+    u'firstname': identity,
+    u'lastname': identity,
+    u'\ufeffid': str_to_int_or_none,
+    u'gender': str_to_int_or_none,
+    u'relationships': str_to_int_or_none,
+    u'status': str_to_int_or_none,
+    u'wall': str_to_int_or_none,
+    u'subscriptions': str_to_int_or_none,
+    u'photos': str_to_int_or_none,
+    u'friends': str_to_int_or_none
 }
 
 
@@ -182,14 +187,7 @@ if __name__ == '__main__':
         parsed_tsv = list(parse_tsv(tsv))
 
         dicts = lists_to_dicts(parsed_tsv, conversion_functions)
-        print list(dicts_to_lists(dicts, [
-            u'age',
-            u'friends_age',
-            u'graduation',
-            u'school_end',
-            u'school_start'
-        ]))
-        ages = list(extract_result_from_dicts(dicts, u'age'))
-        intervals = [(0, 10), (11, 15), (16, 19), (20, 24), (25, 30),
-                     (31, 40), (41, 50), (51, 60), (61, 70), (71, 100)]
-        print break_on_intervals(ages, intervals)
+        ages = list(extract_result_from_dicts(dicts, u'friends'))
+        size = len(list(dicts[0].iterkeys()))
+        from pprint import pprint
+        pprint(dicts[:30])
