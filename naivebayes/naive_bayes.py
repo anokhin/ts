@@ -1,9 +1,16 @@
 import sys
 import numpy as np
 from sklearn.preprocessing import LabelBinarizer
+from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.externals import six
+from abc import ABCMeta
 
 
-class BaseNB(object):
+class BaseNB(six.with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
+    
+    def __init__(self):
+        self.class_prior = None
+        self.classes = None
 
     def predict(self, X):
         return self.classes[np.argmax(self._joint_likelihood(X), 1)]
@@ -14,7 +21,6 @@ class BaseNB(object):
         # normalize probability
         norm_coef = np.sum(jl, 1)[:, np.newaxis]
         jl = np.divide(jl, norm_coef)
-
         return jl[:]
 
     def predict_log_proba(self, X):
@@ -26,8 +32,7 @@ class GaussianNB(BaseNB):
     def __init__(self):
         self.mean = None
         self.variance = None
-        self.class_prior = None
-        self.classes = None
+
 
     def fit(self, X, y):
         X = np.array(X)
@@ -45,8 +50,7 @@ class GaussianNB(BaseNB):
 
         EPS = 0.0000001
         for i, y_i in enumerate(self.classes):
-
-            # only samples with required results
+            # get Xs only for y_i class
             X_yi = X[y_i == y]
             self.class_prior[i] = 1.0 * X_yi.size / X.size
             self.mean[i] = np.mean(X_yi, axis=0)
@@ -65,8 +69,7 @@ class GaussianNB(BaseNB):
 
             likelihood.append(proba)
 
-        likelihood = np.divide(likelihood, norm_coef)
-
+        likelihood = np.array(likelihood).T
         return likelihood
 
 
@@ -81,7 +84,7 @@ class BaseDiscreteNB(BaseNB):
 
     def fit(self, X, y):
         X = np.array(X)
-        y = np.array(y)
+        y = np.array(y, dtype=np.str_)
         samples, self.n_features = X.shape
 
         # because our space of targets are discrete
@@ -94,8 +97,8 @@ class BaseDiscreteNB(BaseNB):
         self.feature_proba = []
 
         for i, y_i in enumerate(self.classes):
-        	# get Xs only for y_i class
-            X_yi = X[np.equal(y_i, y)]
+            # get Xs only for y_i class
+            X_yi = X[y_i == y]
             class_count = X_yi[:, 0].size
             self.class_prior[i] = np.float64(class_count) / samples
 
@@ -128,8 +131,8 @@ class MultinomialNB(BaseDiscreteNB):
         return all_features / (count_features + self.alpha * self.n_class)
 
     def _joint_likelihood(self, X):
-    	X = np.array(X)
-    	# if X is 1-d array, we should interpret it like 2-d array
+        X = np.array(X)
+        # if X is 1-d array, we should interpret it like 2-d array
         if len(X.shape) == 1:
             X = X[np.newaxis, :]
 
@@ -139,7 +142,7 @@ class MultinomialNB(BaseDiscreteNB):
             for i, y_i in enumerate(self.classes):
                 proba = self.class_prior[i]
                 for first, second in zip(j, self.feature_proba[i]):
-                	# if feature is represented in a vector 
+                    # if feature is represented in a vector 
                     if not np.equal(first, 0.0):
                         proba *= first * second
                 likelihood_x[i] = proba
@@ -153,8 +156,6 @@ class BernoulliNB(BaseDiscreteNB):
 
     def __init__(self, alpha=1.0):
         self.alpha = alpha
-        self.fit_prior = fit_prior
-        self.class_prior = class_prior
 
     def _add_features_dens(self, sample_features, all_features, count_features):
         binary_features = np.minimum(sample_features, 1.0)
@@ -167,7 +168,7 @@ class BernoulliNB(BaseDiscreteNB):
         return all_features / (count_features + self.alpha * self.n_class)
 
     def _joint_likelihood(self, X):
-		# if X is 1-d array, we should interpret it like 2-d array
+        # if X is 1-d array, we should interpret it like 2-d array
         if len(X.shape) == 1:
             X = X[np.newaxis, :]
 
@@ -177,7 +178,7 @@ class BernoulliNB(BaseDiscreteNB):
             for i, y_i in enumerate(self.classes):
                 proba = self.class_prior[i]
                 for first, second in zip(j, self.feature_proba[i]):
-                	# if feature is represented in a vector, otherwise multiply with (1 - prob(feature_in_class))
+                    # if feature is represented in a vector, otherwise multiply with (1 - prob(feature_in_class))
                     if not np.equal(first, 0.0):
                         proba *= second
                     else:
