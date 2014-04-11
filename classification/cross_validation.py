@@ -106,7 +106,7 @@ def main():
     )
     parser.add_argument(
         '--intervals', action='store', type=int,
-        help='Amount of intervals of ages. If not provided, will use 5'
+        help='Amount of intervals of ages. If not provided, will use 2'
     )
     parser.add_argument(
         '--cv_groups', action='store', type=int,
@@ -114,7 +114,7 @@ def main():
     )
     args = parser.parse_args()
     tsv_filename = args.data
-    intervals = args.intervals or 5
+    intervals = args.intervals or 2
     amount_of_groups = args.cv_groups or 5
     if tsv_filename is None:
         print "Please provide tsv file"
