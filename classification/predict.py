@@ -61,6 +61,7 @@ if __name__ == '__main__':
     features_lists_to_predict = tsv_import.get_data_from_file(
         predict_filename, FEATURE_FIELDS, CONVERSION_FUNCTIONS)
 
+    print FEATURE_FIELDS
     for user_features in features_lists_to_predict:
         print user_features, classifier.predict(user_features)
 
