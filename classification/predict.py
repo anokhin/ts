@@ -22,6 +22,22 @@ FEATURE_FIELDS = [
     u'age', u'school_start', u'school_end', u'graduation',
     u'friends_age']
 
+def load_training_data(tsv_filename, amount_of_intervals, classifier_class):
+    user_lists = tsv_import.get_data_from_file(
+        tsv_filename,
+        FEATURE_FIELDS,
+        CONVERSION_FUNCTIONS
+    )
+    ages = tsv_import.get_ages(user_lists, FEATURE_FIELDS)
+    age_intervals = tsv_import.determine_intervals(
+        amount_of_intervals, ages
+    )
+    age_classes = tsv_import.break_on_intervals(ages, age_intervals)
+    classifier = classifier_class()
+    classifier.fit(user_lists, age_classes)
+    return age_intervals, user_lists, classifier
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Predict age for chosen ids')
     parser.add_argument(
@@ -47,19 +63,11 @@ if __name__ == '__main__':
         print "Please provide predict file"
         sys.exit(1)
 
+    AGE_INTERVALS, user_lists, classifier = load_training_data(
+        tsv_filename, amount_of_intervals, naive_bayes.GaussianNB
+    )
 
-    user_lists = tsv_import.get_data_from_file(tsv_filename,
-                                               FEATURE_FIELDS,
-                                               CONVERSION_FUNCTIONS)
-    ages = tsv_import.get_ages(user_lists, FEATURE_FIELDS)
-    AGE_INTERVALS = tsv_import.determine_intervals(
-        amount_of_intervals, ages)
     print "Using age intervals: %s" % AGE_INTERVALS
-
-    age_classes = tsv_import.break_on_intervals(ages, AGE_INTERVALS)
-
-    classifier = naive_bayes.GaussianNB()
-    classifier.fit(user_lists, age_classes)
 
     features_lists_to_predict = tsv_import.get_data_from_file(
         predict_filename, FEATURE_FIELDS, CONVERSION_FUNCTIONS)
