@@ -3,7 +3,7 @@ import sys
 import random
 
 from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS
-from tsv_import import get_data_from_file, get_ages, determine_intervals
+from tsv_import import get_data_from_file, get_friends, determine_intervals
 from tsv_import import break_on_intervals
 from naive_bayes import prediction_score
 
@@ -79,7 +79,7 @@ def main():
         CONVERSION_FUNCTIONS
     )
 
-    ages = get_ages(data, FEATURE_FIELDS)
+    ages = get_friends(data, FEATURE_FIELDS)
     age_intervals = determine_intervals(
         intervals, ages
     )
