@@ -70,3 +70,9 @@ if __name__ == '__main__':
                 print u_dict
                 print classifier.predict(feature_list)
                 print
+
+            print dir(classifier)
+            print classifier._GaussianNB__class_prior_probabilities
+            import pprint
+            pprint.pprint(classifier._GaussianNB__means)
+            pprint.pprint(classifier._GaussianNB__variances)
