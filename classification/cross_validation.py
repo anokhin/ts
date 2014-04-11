@@ -2,10 +2,11 @@ import argparse
 import sys
 import random
 
-from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS
+from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS, FRIENDS_INDEX
 from tsv_import import get_data_from_file, get_friends, determine_intervals
 from tsv_import import break_on_intervals
 from naive_bayes import prediction_score
+from pprint import pprint
 
 
 def choose_random_items(data, results, amount):
@@ -90,6 +91,15 @@ def main():
     numbered_classes = [
         numbers_of_intervals[age_class] for age_class in age_classes
     ]
+
+    pprint(data[:10])
+
+    # delete friends column from data
+    for user in data:
+        user.pop(FRIENDS_INDEX)
+
+    print "cleansed"
+    pprint(data[:10])
 
     if not use_sklearn_nb:
         scores = cross_val_score(
