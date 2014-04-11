@@ -7,20 +7,25 @@ import naive_bayes
 from tsv_import import str_to_int_or_none
 from tsv_import import identity
 
+
 CONVERSION_FUNCTIONS = {
-    u'age': str_to_int_or_none,
-    u'first_name': identity,
-    u'friends_age': str_to_int_or_none,
-    u'graduation': str_to_int_or_none,
-    u'last_name': identity,
-    u'school_end': str_to_int_or_none,
-    u'school_start': str_to_int_or_none,
-    u'uid': str_to_int_or_none
+    u'firstname': identity,
+    u'lastname': identity,
+    u'\ufeffid': str_to_int_or_none,
+    u'gender': str_to_int_or_none,
+    u'relationships': str_to_int_or_none,
+    u'status': str_to_int_or_none,
+    u'wall': str_to_int_or_none,
+    u'subscriptions': str_to_int_or_none,
+    u'photos': str_to_int_or_none,
+    u'friends': str_to_int_or_none
 }
 
 FEATURE_FIELDS = [
-    u'age', u'school_start', u'school_end', u'graduation',
-    u'friends_age']
+    u'gender', u'relationships', u'status', u'wall',
+    u'subscriptions', u'photos', u'friends'
+]
+
 
 def load_training_data(tsv_filename, amount_of_intervals, classifier_class):
     user_lists = tsv_import.get_data_from_file(
@@ -28,7 +33,7 @@ def load_training_data(tsv_filename, amount_of_intervals, classifier_class):
         FEATURE_FIELDS,
         CONVERSION_FUNCTIONS
     )
-    ages = tsv_import.get_ages(user_lists, FEATURE_FIELDS)
+    ages = tsv_import.get_friends(user_lists, FEATURE_FIELDS)
     age_intervals = tsv_import.determine_intervals(
         amount_of_intervals, ages
     )
@@ -75,7 +80,3 @@ if __name__ == '__main__':
     print FEATURE_FIELDS
     for user_features in features_lists_to_predict:
         print user_features, classifier.predict(user_features)
-
-    #import pprint
-    #pprint.pprint(classifier._GaussianNB__means)
-    #pprint.pprint(classifier._GaussianNB__variances)
