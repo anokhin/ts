@@ -64,6 +64,6 @@ if __name__ == '__main__':
     for user_features in features_lists_to_predict:
         print user_features, classifier.predict(user_features)
 
-    import pprint
-    pprint.pprint(classifier._GaussianNB__means)
-    pprint.pprint(classifier._GaussianNB__variances)
+    #import pprint
+    #pprint.pprint(classifier._GaussianNB__means)
+    #pprint.pprint(classifier._GaussianNB__variances)
