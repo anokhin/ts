@@ -47,10 +47,10 @@ class GaussianNB:
                 raise Exception("{} - no such class".format(result))
 
     def predict(self, sample):
-        predicted_probabilities = {
-            self.__class_prior_probabilities[_class] *
-            numpy.prod([
-                GaussianNB.__gaussian_likelihood(
+        predicted_log_probabilities = {
+            numpy.log(self.__class_prior_probabilities[_class]) +
+            numpy.sum([
+                GaussianNB.__gaussian_likelihood_log(
                     value,
                     self.__means[(_class, index)],
                     self.__variances[(_class, index)]
@@ -60,14 +60,18 @@ class GaussianNB:
             _class
             for _class in self.__classes
         }
-        return predicted_probabilities[max(predicted_probabilities.keys())]
+        return predicted_log_probabilities[
+            max(predicted_log_probabilities.keys())
+        ]
 
     @staticmethod
-    def __gaussian_likelihood(value, mean, variance):
+    def __gaussian_likelihood_log(value, mean, variance):
         if value is None:
-            return 1
-        return (e ** (-1) * ((float(value) - mean) ** 2) / (2 * variance)) / \
-            sqrt(2.0 * pi * variance)
+            return np.log(1)
+
+        result = -0.5 * numpy.log(2 * numpy.pi * variance)
+        result -= (value - mean) ** 2 / (2 * variance)
+        return result
 
 
 def gaussian_variance(numbers):
@@ -88,15 +92,6 @@ def prediction_score(
         data_to_train = numpy.array(data_to_train)
         training_results = numpy.array(training_results)
     classifier.fit(data_to_train, training_results)
-    if use_sklearn_nb:
-        print classifier.class_prior_
-    else:
-        print classifier._GaussianNB__class_prior_probabilities
-        import pprint
-        print "===========means============"
-        pprint.pprint(classifier._GaussianNB__means)
-        print "============variances============"
-        pprint.pprint(classifier._GaussianNB__variances)
     predicted_results = [
         classifier.predict(sample) for sample in data_to_predict
     ]
