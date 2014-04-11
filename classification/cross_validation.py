@@ -9,9 +9,25 @@ from naive_bayes import GaussianNB
 
 
 def choose_random_items(data, results, amount):
-    """Returns random sample from data and its matching sample of results"""
-    chosen_pairs = random.sample(zip(data, results), amount)
-    return zip(*chosen_pairs)
+    """Randomly chooses amount samples from data and results
+    Returns randomly chosen and unchosen data and results separately
+    """
+    chosen_indexes = random.sample(range(len(data)), amount)
+    chosen_data = []
+    chosen_results = []
+    unchosen_data = []
+    unchosen_results = []
+    for i in range(len(data)):
+        if i in chosen_indexes:
+            chosen_data.append(data[i])
+            chosen_results.append(results[i])
+        else:
+            unchosen_data.append(data[i])
+            unchosen_results.append(results[i])
+
+    return chosen_data, chosen_results, unchosen_data, unchosen_results
+
+
 
 
 def main():
