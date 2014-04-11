@@ -101,8 +101,6 @@ def regression_score(
         (predicted - actual) ** 2
         for predicted, actual in zip(predicted_regression, friends_to_predict)
     ]
-    print predicted_regression
-    print
     return numpy.sqrt(numpy.mean(square_differences))
 
 
