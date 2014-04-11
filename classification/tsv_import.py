@@ -96,6 +96,23 @@ def extract_result_from_dicts(dicts, result_field):
         yield dict[result_field]
 
 
+def determine_intervals(amount_of_intervals, numbers):
+    length = len(numbers)
+    length_of_interval = length / amount_of_intervals
+    sorted_numbers = sorted(numbers)
+    intervals = []
+    lower_limits = [
+        sorted_numbers[length_of_interval * no_of_interval]
+        for no_of_interval in range(amount_of_intervals)
+    ]
+    lower_limits = sorted(list(set(lower_limits)))
+    intervals = [pair for pair in zip(
+        lower_limits,
+        [x - 1 for x in lower_limits][1:] + [sorted_numbers[-1]]
+    )]
+    return intervals
+
+
 def break_on_intervals(results, intervals):
     """Arguments:
         results - list of results (ages)
