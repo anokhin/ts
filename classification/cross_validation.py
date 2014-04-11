@@ -5,7 +5,7 @@ import random
 from predict import CONVERSION_FUNCTIONS, FEATURE_FIELDS
 from tsv_import import get_data_from_file, get_ages, determine_intervals
 from tsv_import import break_on_intervals
-from naive_bayes import GaussianNB
+from naive_bayes import GaussianNB, prediction_score
 
 
 def choose_random_items(data, results, amount):
