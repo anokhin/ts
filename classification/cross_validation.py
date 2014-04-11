@@ -71,10 +71,9 @@ def main():
         intervals, ages
     )
     age_classes = break_on_intervals(ages, age_intervals)
-    classifier = GaussianNB()
 
-    scores = cross_validation.cross_val_score(
-        classifier, data, age_classes, amount_of_groups
+    scores = cross_val_score(
+        GaussianNB, data, age_classes, amount_of_groups
     )
     print scores
 
