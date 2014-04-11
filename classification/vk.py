@@ -9,8 +9,8 @@ import datetime
 import user
 import io
 import sys
+import argparse
 import numpy
-from sys import argv
 from api import Api
 from datetime import date
 
@@ -163,6 +163,7 @@ def get_required_fields(target_fields):
     required_fields = set()
     for k, v in target_fields.iteritems():
         required_fields.update(v.required_fields)
+
     return required_fields
 
 
@@ -225,16 +226,49 @@ def filter_without_nones(list_of_dicts):
 
 
 def main():
-    token = argv[1]
-    user_uid = argv[2]
+    parser = argparse.ArgumentParser(description='download vk user info')
+    parser.add_argument(
+        '--filename',
+        action='store', metavar='FILE',
+        help='filename of tsv file in which to save data')
+    parser.add_argument(
+        '--append', action='store_true',
+        help='append to the file, do not write column names in it'
+    )
+    parser.add_argument(
+        '--with_nones', action='store_true',
+        help="don't discard values with nones"
+        "this should be turned on for prediction data, not training"
+    )
+    parser.add_argument(
+        'oauth', action='store', metavar='OAUTH',
+        help='oauth token to use for connections'
+    )
+    parser.add_argument(
+        'amount_of_users', action='store', type=int,
+        help='stop after we acquire how many users'
+    )
+    args = parser.parse_args()
 
-    num_of_ids = 50
+    num_of_ids = 10
     max_id = 240 * 1000 * 1000
-    NEED_IDS = 1000
+
+    NEED_IDS = args.amount_of_users
+    token = args.oauth
+    filename = args.filename
+    append = args.append
+    with_nones = args.with_nones
+
+    print "NEED_IDS = {}\ntoken = {}\nfilename = {}\nappend = {}\n".format(
+        NEED_IDS, token, filename, append) + "with_nones = {}".format(
+            with_nones)
+
+    if append and filename is None:
+        print "append and filename can't be used simultaneously"
+        sys.exit(1)
 
     global api
     api = VkApi(token)
-    uids = api.get_friend_ids(user_uid)
     target_fields = {
         u'uid': get_uid,
         u'first_name': get_first_name,
@@ -248,13 +282,13 @@ def main():
     target_fields_list = [k for k in target_fields.iterkeys()]
     required_fields = get_required_fields(target_fields)
 
-    if len(argv) >= 5 and argv[4] == "--append":
-        output_file = io.open(argv[3], "a", encoding='utf-8')
+    if filename is None:
+        output_file = sys.stdout
+        output_file.write(u'\t'.join(target_fields_list) + u'\n')
+    elif append:
+        output_file = io.open(filename, "a", encoding='utf-8')
     else:
-        if (len(argv) == 4):
-            output_file = io.open(argv[3], "w", encoding='utf-8')
-        else:
-            output_file = sys.stdout
+        output_file = io.open(filename, "w", encoding='utf-8')
         output_file.write(u'\t'.join(target_fields_list) + u'\n')
 
     users_gathered = 0
@@ -264,23 +298,32 @@ def main():
         for i in range(0, num_of_ids):
             uid = numpy.random.randint(1, max_id)
             uids.append(str(uid))
-        for u in api.get_jsons(uids, required_fields):
-            response_dicts.append(u)
-        without_deactivated = [x for x in response_dicts
-                               if u'deactivated' not in x]
-        processed_users = filter_without_nones([
-            process_user(target_fields, user)
-            for user in without_deactivated
-        ])
-        users_gathered += len(processed_users)
+
+        response_dicts.extend(api.get_jsons(uids, required_fields))
+        print("ids gathered {}".format(users_gathered))
+        without_deactivated = [
+            x for x in response_dicts
+            if ((u'deactivated' not in x)
+                and (u'DELETED' not in x))]
+
+        if not with_nones:
+            processed_users = filter_without_nones([
+                process_user(target_fields, user)
+                for user in without_deactivated
+            ])
+        else:
+            processed_users = [process_user(target_fields, user)
+                               for user in without_deactivated]
+
         output_file.write(u'\n'.join(
             [user_dict_to_line(user, target_fields_list)
              for user in processed_users]
         ))
+
+        users_gathered += len(processed_users)
         if len(processed_users) != 0:
             output_file.write(u'\n')
-        output_file.flush()
-        print("ids gathered {}".format(users_gathered))
+            output_file.flush()
 
 
 if __name__ == "__main__":
