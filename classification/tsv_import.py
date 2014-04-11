@@ -155,6 +155,11 @@ def get_data_from_file(filename, fields, conversion_functions):
         return user_lists
 
 
+def get_ages(user_lists, fields):
+    age_index = fields.index(u'age')
+    return [features[age_index] for features in user_lists]
+
+
 if __name__ == '__main__':
     with io.open(argv[1]) as tsv:
         parsed_tsv = list(parse_tsv(tsv))
