@@ -69,6 +69,8 @@ def main():
     global use_sklearn_nb
     use_sklearn_nb = args.sklearn_nb
 
+    print "Feature fields: %s" % FEATURE_FIELDS
+
     if use_sklearn_nb:
         from sklearn.naive_bayes import GaussianNB
     else:
