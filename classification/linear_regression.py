@@ -2,6 +2,8 @@ __author__ = 'vludv'
 
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.metrics import mean_absolute_error
 import datetime
 import re
 
@@ -25,7 +27,7 @@ class FbLinRegVectorizer:
         for user_fb_raw in X:
             learn_features = self.extract_learn_data(user_fb_raw)
             target = learn_features.get(target_feature)
-            if target is None:
+            if target is None or target > 80:
                 continue
             vec = self.get_user_vector(learn_features)
             X_dst.append(vec)
@@ -74,7 +76,7 @@ class FbLinRegVectorizer:
         return {
             "age"           : FbLinRegVectorizer.parse_date(user.get("birthday")),
             "sex"           : user.get("sex"),
-            "relationship"  : user.get("relationship"),
+            "relationship"  : user.get("relationship_status"),
             "first_work"    : FbLinRegVectorizer.extract_first_work_year(user),
             "last_education": FbLinRegVectorizer.extract_last_education_year(user)
         }
@@ -129,6 +131,14 @@ class LinearRegression:
         self.b = None
         self.train_coefs = None
 
+    #sklearn-like interface
+    def get_params(self, deep=True):
+        return {}
+
+    #sklearn-like interface
+    def set_params(self, **params):
+        pass
+
     def fit(self, A, b):
         assert A.ndim == 2 and b.ndim == 1 and A.shape[0] == b.shape[0]
 
@@ -175,7 +185,7 @@ class LinearRegression:
             cur_pos -= step
             iteration += 1
 
-        print "iterations:", iteration
+        #print "iterations:", iteration
 
         return cur_pos
 
