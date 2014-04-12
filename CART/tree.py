@@ -1,31 +1,28 @@
 from numpy import *
 import pydot
+eps = 0.00001
 
 class Tree:
-    def __init__(self):
-        None
+    def __init__(self, graph):
+        self.graph = graph
         
     def fit(self, train, target):
-        self.graph = pydot.Dot(graph_type='digraph', rankdir='LR', resolution='200')            
+                    
         self.train = train
         self.target = target
         self.root = Node(train, target, 0, None, self.graph)        
         self.root.process()                
         self.graph.add_node(pydot.Node(":Leaf Node", style="filled", fillcolor="#b3f487", shape='note'))
         self.graph.add_node(pydot.Node(":Inner Node", style="filled", fillcolor="#98d1d8", shape='note'))        
-        try:
-            self.graph.write_jpg('graph.jpg')
-        except:
-            print "Picture creating failed. Probably it's too big"
-				
+        #self.graph.write_jpg('graph.jpg')
         
     def predict(self, test):
         result = empty(len(test))
         i = 0                        
         for q in test:             
-            result[i] = self.root.predict(q)            
+            result[i] = self.root.predict(q)
             i += 1            
-        return result
+        return result    
         
 class Node:
     def __init__(self, train, target, level, parent, graph):
@@ -48,8 +45,10 @@ class Node:
     
     def process(self):        
         if self.n <= 5 or self.train.shape[1] == 0:
+            #print "1 ", self.n
             self.stop()
         else:
+            #print "2 ", self.n
             self.split()        
     
     def stop(self):
@@ -66,36 +65,45 @@ class Node:
             edge = pydot.Edge(exp1, exp2)
             self.graph.add_edge(edge)
     
-    def split(self):
+    def split(self):        
         self.leaf = False                
         bestImpurityDelta = -1
         i = 0       
+        splittable = False
         while i < self.train.shape[1]:
             #iterating through features            
             feature = self.train[:,i:i+1].ravel()            
             ind = argsort(feature)
             feature = array([feature[k] for k in ind])            
-            j = 0
+            j = 1
             trainSorted = array([self.train[k] for k in ind])
+            targetSorted = array([self.target[k] for k in ind])
+            cur = feature[0]
             while j < self.n:
                 #searching for best split
-                targetSorted = array([self.target[k] for k in ind])
+                if (feature[j] == cur):
+                    j += 1
+                    continue
+                splittable = True
+                cur = feature[j]
+                
                 nodeL = Node(trainSorted[:j], targetSorted[:j], self.level + 1, self, self.graph)
                 nodeR = Node(trainSorted[j:], targetSorted[j:], self.level + 1, self, self.graph)
                 impurityDelta = self.impurity - j * nodeL.impurity / self.n   \
-                - (self.n - j) * nodeR.impurity / self.n
-                if impurityDelta > bestImpurityDelta:
+                - (self.n - j) * nodeR.impurity / self.n                
+                if impurityDelta > bestImpurityDelta:                    
                     bestImpurityDelta = impurityDelta
                     bestNodeL = nodeL
                     bestNodeR = nodeR
-                    self.bestSplit = j
-                    if j == self.n - 1:
-                        self.bestSplitValue = feature[j]
-                    else:
-                        self.bestSplitValue = (feature[j] + feature[j+1])/2
+                    self.bestSplit = j                    
+                    self.bestSplitValue = (feature[j-1] + feature[j])/2
                     self.bestFeature = i
                 j += 1
-            i += 1
+            i += 1        
+        if not splittable:
+            #print "3 ", self.n
+            self.stop()
+            return
         self.nodeL, self.nodeR = bestNodeL, bestNodeR 
         if self.parent is not None:
             exp1 = "N=%d Imp=%f\n X[%d]<=%f" % (self.parent.n, self.parent.impurity, \
@@ -113,7 +121,7 @@ class Node:
             
     def calculateImpurity(self):
         self.impurity = 0.
-        if self.n != 0:                      
+        if abs(self.n) > eps:                      
             mean = self.target.sum()/self.n                           
             for y in self.target:
                 self.impurity += (y - mean)**2
