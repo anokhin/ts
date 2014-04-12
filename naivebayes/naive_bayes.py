@@ -7,7 +7,7 @@ from abc import ABCMeta
 
 
 class BaseNB(six.with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
-    
+
     def __init__(self):
         self.class_prior = None
         self.classes = None
@@ -17,11 +17,11 @@ class BaseNB(six.with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
 
     def predict_proba(self, X):
         jl = self._joint_likelihood(X)
-
         # normalize probability
         norm_coef = np.sum(jl, 1)[:, np.newaxis]
         jl = np.divide(jl, norm_coef)
         return jl[:]
+
 
     def predict_log_proba(self, X):
         return np.log(self.predict_proba(X))
@@ -35,28 +35,30 @@ class GaussianNB(BaseNB):
 
 
     def fit(self, X, y):
-        X = np.array(X)
+        X = np.array(X, dtype = np.float128)
         y = np.array(y)
-        samples, features = X.shape
+        samples, self.n_features = X.shape
 
         lb = LabelBinarizer()
         lb.fit(y)
         self.classes = lb.classes_
+        self.n_class = self.classes.size
 
         # we'll find mean and variance using maximum likelihood estimation
-        self.mean = np.zeros([self.classes.size, features])
-        self.variance = np.zeros([self.classes.size, features])
-        self.class_prior = np.zeros(self.classes.size)
+        self.mean = np.array(np.zeros([self.n_class, self.n_features]), dtype=np.float128)
+        self.variance = np.array(np.zeros([self.n_class, self.n_features]), dtype = np.float128)
+        self.class_prior = np.zeros(self.n_class)
 
-        EPS = 0.0000001
+
+        EPS = 0.001
         for i, y_i in enumerate(self.classes):
             # get Xs only for y_i class
-            X_yi = X[y_i == y]
-            self.class_prior[i] = 1.0 * X_yi.size / X.size
+            X_yi = X[y == y_i]
+            self.class_prior[i] = X_yi.size / X.size
             self.mean[i] = np.mean(X_yi, axis=0)
-            self.variance[i] = np.var(X_yi, axis=0) + EPS
-
+            self.variance[i] = np.array(np.var(X_yi, axis=0) + EPS, dtype=np.float128)
         return self
+
 
     def _joint_likelihood(self, X):
         likelihood = []
@@ -64,11 +66,14 @@ class GaussianNB(BaseNB):
 
         # calculate sample probabilities
         for i in range(0, self.classes.size):
-            proba = self.class_prior[i] / np.prod(np.sqrt(2 * np.pi * self.variance[i])) * np.exp(- 0.5 * np.sum(((X - self.mean[i]) ** 2) /
+            proba = self.class_prior[i] / np.prod(np.sqrt(2 * np.pi * self.variance[i])) * np.exp( -0.5 * np.sum(((X - self.mean[i]) ** 2) /
                                                                                                                  (self.variance[i]), 1))
+
+
 
             likelihood.append(proba)
 
+        # work bad on big data, because variance and mean are very little
         likelihood = np.array(likelihood).T
         return likelihood
 
@@ -84,7 +89,7 @@ class BaseDiscreteNB(BaseNB):
 
     def fit(self, X, y):
         X = np.array(X)
-        y = np.array(y, dtype=np.str_)
+        y = np.array(y)
         samples, self.n_features = X.shape
 
         # because our space of targets are discrete
@@ -98,7 +103,7 @@ class BaseDiscreteNB(BaseNB):
 
         for i, y_i in enumerate(self.classes):
             # get Xs only for y_i class
-            X_yi = X[y_i == y]
+            X_yi = X[y == y_i]
             class_count = X_yi[:, 0].size
             self.class_prior[i] = np.float64(class_count) / samples
 

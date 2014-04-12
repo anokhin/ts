@@ -6,6 +6,7 @@ from sklearn import naive_bayes
 from sklearn.cross_validation import cross_val_score
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import recall_score
 
 import unicodedata
 import numpy as np
@@ -35,9 +36,19 @@ def select_features(lang):
 	return features
 
 
-def validate_model(model, X, y, folds=7):
-	scores = cross_val_score(model, X, y, cv=folds)
+def validate_model(model, X, y, folds=10, scoring='accuracy'):
+	scores = cross_val_score(model, X, y, cv=folds, scoring=scoring)
 	return scores
+
+def create_model():
+	models = ['MultinomialNB', 'BernoulliNB', 'GaussianNB']
+	alpha = [0.1, 0.5, 1.0, 1.5, 2.0, 5.0]
+	for n in models:
+		if n == 'GaussianNB':
+			yield globals()[n]()
+		else: 
+			for a in alpha:
+				yield globals()[n](alpha=a)
 
 
 def main():
@@ -52,7 +63,6 @@ def main():
 		user = u''
 		for word in data:
 			normalized_word = normalize_record(word)
-			# print normalized_word
 			user += normalized_word + " "
 
 		names.append(user)
@@ -61,24 +71,11 @@ def main():
 	cv = CountVectorizer()
 	X = cv.fit_transform(names).todense()
 
-	# models = ['BernoulliNB', 'GaussianNB', 'MultinomialNB']
-	discrete_models = ['MultinomialNB', 'BernoulliNB']
-	continuous_models = ['GaussianNB']
-
-	for n in discrete_models:
-		model = globals()[n]()
+	for model in create_model():
 		print model
 		scores = validate_model(model, X, np.array(genders))
 		print scores
 		print "Mean accuracy: {0}".format(np.mean(scores))
-
-	iris = load_iris()
-	for n in continuous_models:
-		model = globals()[n]()
-		print model
-		scores = validate_model(model, iris.data, np.array(iris.target))
-		print scores
-		print "Model mean accuracy: {0}".format(np.mean(scores))
 		
 
 def parse_args():
