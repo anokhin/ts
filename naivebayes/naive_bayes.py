@@ -54,7 +54,7 @@ class GaussianNB(BaseNB):
         for i, y_i in enumerate(self.classes):
             # get Xs only for y_i class
             X_yi = X[y == y_i]
-            self.class_prior[i] = X_yi.size / X.size
+            self.class_prior[i] = 1.0 * X_yi.size / X.size
             self.mean[i] = np.mean(X_yi, axis=0)
             self.variance[i] = np.array(np.var(X_yi, axis=0) + EPS, dtype=np.float128)
         return self
