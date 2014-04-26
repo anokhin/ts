@@ -10,7 +10,7 @@ __author__ = 'nikolayanokhin'
 
 def generate_data(n):
     print "Generating data set with %s clusters" % n
-    centers = numpy.random.randint(10, size=(n, 2))
+    centers = numpy.random.randint(20, size=(n, 2))
     return sklearn.datasets.make_blobs(n_samples=750, centers=centers, cluster_std=1)
 
 
@@ -23,17 +23,32 @@ def plot_data(x, labels):
 
 def plot_criterion(ks, crs, col):
     print "Plotting clustering criterion"
-    pylab.plot(ks, crs, col + 'o-')
+    pylab.plot(ks[1:], crs[1:], col + 'o-')
 
 
 def squared_criterion(x, labels):
-    # TODO: Implement average squared within-cluster distance criterion
-    return len(numpy.unique(labels))
+    u_labels = numpy.unique(labels)
+    s = 0.0
+    for label in u_labels:
+        xl = x[labels == label, :]
+        centroid = numpy.mean(xl, axis=0)
+        s += numpy.sum((xl - centroid) * (xl - centroid))
+    return s/len(u_labels)
 
 
 def diameter_criterion(x, labels):
-    # TODO: Implement average cluster diameter criterion
-    return numpy.sqrt(len(numpy.unique(labels)))
+    u_labels = numpy.unique(labels)
+    s = 0.0
+    for label in u_labels:
+        xl = x[labels == label, :]
+        d = 0
+        for x1 in xl:
+            for x2 in xl:
+                l = numpy.sqrt(numpy.sum((x1 - x2) * (x1 - x2)))
+                if l > d:
+                    d = l
+        s += d
+    return s/len(u_labels)
 
 
 def silhouette_criterion(x, labels):
@@ -69,8 +84,11 @@ def main():
 
     pylab.figure(figsize=(12, 6))
 
+    ward = Ward(n_clusters=args.n).fit(x)
+    labels = ward.labels_
+
     pylab.subplot(1, 2, 1)
-    plot_data(x, tc)
+    plot_data(x, labels)
 
     pylab.subplot(1, 2, 2)
     plot_criterion(ks, crs, col)
