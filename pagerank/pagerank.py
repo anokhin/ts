@@ -1,3 +1,4 @@
+# coding=utf-8
 import numpy
 import numpy.linalg
 import sklearn.preprocessing
@@ -31,14 +32,47 @@ def pagerank_iteration(v, m_beta, teleport):
 
 def main():
     print "Welcome to the PageRank calculator"
+
+    # Группа 1
+    # m = numpy.array([
+    #     [45, 30, 40, 25],
+    #     [20, 15, 20, 10],
+    #     [20, 30, 25, 25],
+    #     [15, 25, 15, 20]
+    # ], dtype=float)
+
+    # Группа 2
+    # m = numpy.array([
+    #     [45, 40, 40, 40],
+    #     [20, 20, 22, 20],
+    #     [20, 25, 21, 20],
+    #     [15, 15, 17, 20]
+    # ], dtype=float)
+
+    # Группа 3
+    # m = numpy.array([
+    #     [30, 30, 30],
+    #     [30, 30, 40],
+    #     [30, 30, 20]
+    # ], dtype=float)
+
+    # Группа 4
     m = numpy.array([
-        [50., 10., 30., 30.],
-        [10., 70., 10., 5.],
-        [20., 10., 30., 30.],
-        [20., 10., 30., 35.]
-    ])
+        [30, 40, 30, 30],
+        [20, 20, 20, 20],
+        [30, 20, 20, 20],
+        [10, 20, 30, 30]
+    ], dtype=float)
+
+    # Группа 6
+    # m = numpy.array([
+    #     [33, 33, 34],
+    #     [33, 34, 33],
+    #     [34, 33, 33]
+    # ], dtype=float)
+
     pr = pagerank(m, 0.9)
-    print "Computed pagerank for matrix\n{}\nPageRank={}".format(m, pr)
+    print "Computed pagerank for matrix\n{}\nPageRank={}".format(m, pr * 38)
 
 
 if __name__ == "__main__":
