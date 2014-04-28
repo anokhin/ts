@@ -37,5 +37,4 @@ nosetests.xml
 .idea
 .idea/dictionaries/*
 .xml
-*.pdf
 *.DS_Store

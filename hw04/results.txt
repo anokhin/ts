@@ -1,0 +1,6 @@
+Women vs men (360 people):
+groups_count: 98 vs 105
+audio_count: 462 vs 355
+friends_count: 254 vs 452
+wall_post_count: 2167 vs 1190
+album_count: 4 vs 5
