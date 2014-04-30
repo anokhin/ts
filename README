@@ -1,0 +1,17 @@
+ts
+==
+
+If something says "ages", read it as "friends" in this branch.
+This branch is for predicting amount of friends, not ages.
+If you want to predict ages (that branch is really better),
+see branch naive_bayes.
+
+cross_validation.py:
+    python2 cross_validation.py --data $FILENAME --intervals $INTERVALS --cv_groups CV_GROUPS
+        cross_validate data in $FILENAME, CV_GROUPS fold, break friends' amount
+        into $INTERVALS intervals
+
+predict.py:
+    python2 predict.py --train $TRAIN_FILENAME --predict $PREDICT_FILENAME --intervals $INTERVALS
+        predict friends' amounts for $PREDICT_FILENAME, train on $TRAIN_FILENAME
+        break amounts into $INTERVALS intervals

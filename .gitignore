@@ -39,3 +39,6 @@ nosetests.xml
 .xml
 *.pdf
 *.DS_Store
+
+# Rope python refactoring tool
+.ropeproject
