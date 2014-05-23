@@ -1,9 +1,12 @@
 import argparse
 import math
+import numpy
+
 import pylab
 import sklearn.cross_validation as cv
 
 from sklearn.datasets import load_digits
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 
@@ -52,10 +55,23 @@ def main():
 
     x_train, x_test, y_train, y_test = cv.train_test_split(digits.data, digits.target)
 
-    model = DecisionTreeClassifier()
+    n = 300
+    acc_train = numpy.zeros(n)
+    acc_test = numpy.zeros(n)
+    t = numpy.arange(n) + 1
 
-    acc_train, acc_test = evaluate_model(model, x_train, y_train, x_test, y_test)
-    print "Model accuracy: train=%f, test=%f" % (acc_train, acc_test)
+    for i in xrange(n):
+        k = t[i]
+        model = RandomForestClassifier(n_estimators=k)
+        atr, ats = evaluate_model(model, x_train, y_train, x_test, y_test)
+        acc_train[i] = 1 - atr
+        acc_test[i] = 1 - ats
+
+    pylab.plot(t, acc_train, 'r')
+    pylab.plot(t, acc_test, 'b')
+    pylab.show()
+
+    model = DecisionTreeClassifier()
 
     if args.show:
         show_images(model, x_test[:args.show])
@@ -64,7 +80,6 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser(description='Digit recognition using ensemble models')
     parser.add_argument('-d', dest='show_desc', action='store_true', default=False, help='Show data set description')
-    parser.add_argument('-n', dest='splits', type=int, default=1, help='Number of splits in cross-validation')
     parser.add_argument('-s', dest='show', type=int, default=0, help='Number of images from test set to show')
     return parser.parse_args()
 
